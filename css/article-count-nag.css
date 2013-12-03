@@ -1,0 +1,95 @@
+#issuem-leaky-paywall-articles-remaining-nag {
+	display: block;
+	width: 300px;
+	height: 200px;
+    bottom: 25px;
+    overflow: hidden;
+    position: fixed;
+    left: -300px;
+    z-index: 4815162342;
+    background-color: #fff;
+    border-top: solid #000 thin;
+    border-right: solid #000 thin;
+    border-bottom: solid #000 thin;
+}
+
+#issuem-leaky-paywall-articles-zero-remaining-nag {
+	display: block;
+	width: 300px;
+	height: 200px;
+    overflow: hidden;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-top: -150px;
+	margin-left: -100px;
+    z-index: 4815162342;
+    background-color: #fff;
+    border: solid #000 thin;
+}
+
+#issuem-leaky-paywall-articles-remaining-nag #issuem-leaky-paywall-articles-remaining,
+#issuem-leaky-paywall-articles-zero-remaining-nag #issuem-leaky-paywall-articles-remaining {
+	display: block;
+	width: 150px;
+	height: 150px;
+    position: relative;
+    float: left;
+    color: #bbb;
+    text-align: center;
+    font-size: 10em;
+	line-height: 1em;
+}
+
+#issuem-leaky-paywall-articles-remaining-nag #issuem-leaky-paywall-articles-remaining-close,
+#issuem-leaky-paywall-articles-zero-remaining-nag #issuem-leaky-paywall-articles-remaining-close {
+	display: block;
+	width: 145px;
+	height: 20px;
+    position: relative;
+    float: right;
+    color: #000;
+    text-align: right;
+    padding-top: 5px;
+    padding-right: 5px;
+    cursor: pointer;
+}
+
+#issuem-leaky-paywall-articles-remaining-nag #issuem-leaky-paywall-articles-remaining-text,
+#issuem-leaky-paywall-articles-zero-remaining-nag #issuem-leaky-paywall-articles-remaining-text {
+	display: block;
+	width: 150px;
+	height: 100px;
+    position: relative;
+    float: right;
+    color: #000;
+    padding-top: 25px;
+}
+
+#issuem-leaky-paywall-articles-remaining-nag #issuem-leaky-paywall-articles-remaining-subscribe-link,
+#issuem-leaky-paywall-articles-zero-remaining-nag #issuem-leaky-paywall-articles-remaining-subscribe-link {
+	clear: both;
+	display: block;
+	width: 300px;
+	height: 25px;
+    bottom: 25px;
+    bottom: 0px;
+    position: relative;
+    color: #0055ff;
+    text-align: center;
+	line-height: 1.6em;
+}
+
+#issuem-leaky-paywall-articles-remaining-nag #issuem-leaky-paywall-articles-remaining-login-link,
+#issuem-leaky-paywall-articles-zero-remaining-nag #issuem-leaky-paywall-articles-remaining-login-link {
+	clear: both;
+	display: block;
+	width: 300px;
+	height: 25px;
+    bottom: 0px;
+    position: relative;
+    color: #00ccff;
+    background-color: #000;
+    text-align: center;
+	line-height: 1.6em;
+}
