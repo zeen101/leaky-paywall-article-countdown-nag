@@ -1,15 +1,17 @@
-=== IssueM - Leaky Paywall - Article Count Nag ===
-Contributors: layotte
-Tags: magazine, issue, manager, paywall, leaky
+=== IssueM - Leaky Paywall - Article Countdown Nag ===
+Contributors: layotte, peterericson
+Tags: metered, paywall, leaky, wordpress, magazine, news, blog, articles, remaining
 Requires at least: 3.0
 Tested up to: 3.7
 Stable tag: 1.0.0
 
-Creates an Article Nag Count. More info at http://issuem.com
+Creates an Article Countdown Nag for IssueM's Leaky Paywall WordPress plugin. More info at http://LeakyPW.com
 
 == Description ==
 
-Creates an Article Nag Count. More info at http://issuem.com
+Lets the reader know how many free articles/pages they have left before they need to subscribe.
+Requires IssueM's Leaky Paywall plugin.
+More info at http://LeakyPW.com
 
 == Installation ==
 
