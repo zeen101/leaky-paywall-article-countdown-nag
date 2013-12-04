@@ -33,24 +33,39 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Count_Nag' ) ) {
 		
 		function process_requests() {
 			
-			global $dl_pluginissuem_leaky_paywall;
+			global $dl_pluginissuem_leaky_paywall, $post;
 			
 			$issuem_settings = $dl_pluginissuem_leaky_paywall->get_settings();
 			
-			$settings = $this->get_settings();
+			if ( is_singular( $issuem_settings['post_types'] ) ) {
 			
-			$free_articles = array();
-
-            if ( !empty( $_COOKIE['issuem_lp'] ) )
-                $free_articles = maybe_unserialize( $_COOKIE['issuem_lp'] );
-                            
-            $articles_remainings = $issuem_settings['free_articles'] - $settings['nag_after_count'];
-                    
-            if ( $settings['nag_after_count'] <= count( $free_articles ) ) {
+				if ( !is_user_logged_in() && !is_issuem_leaky_subscriber_logged_in() ) {
+					
+					$settings = $this->get_settings();
+					
+					$free_articles = array();
+		
+		            if ( !empty( $_COOKIE['issuem_lp'] ) )
+		                $free_articles = maybe_unserialize( $_COOKIE['issuem_lp'] );
+		                            
+		            $articles_remainings = $issuem_settings['free_articles'] - count( $free_articles );
+		                    
+		            if ( $settings['nag_after_count'] <= count( $free_articles ) ) {
+						
+						add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
+						
+						if ( 0 !== $articles_remainings || in_array( $post->ID, $free_articles )  ) {
+							add_action( 'wp_footer', array( $this, 'wp_footer' ) );
+						} else {
+							add_action( 'wp_enqueue_scripts', array( $this, 'zero_article_scripts' ) );
+							add_action( 'wp_head', array( $this, 'wp_head' ) );
+							add_filter( 'issuem_leaky_paywall_subscriber_or_login_message', array( $this, 'issuem_leaky_paywall_subscriber_or_login_message' ), 10, 3 );
+						}
+									
+					}
 				
-				add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
-				add_action( 'wp_footer', array( $this, 'wp_footer' ) );
-							
+				}
+			
 			}
 			
 		}
@@ -62,10 +77,14 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Count_Nag' ) ) {
 						
 		}
 		
-		function wp_footer() {
+		function zero_article_scripts() {
+				wp_enqueue_style( 'issuem-leaky-paywall-zero-articles', ISSUEM_LP_ACN_URL . '/css/acn-zero-articles.css', '', ISSUEM_LP_ACN_VERSION );
+		}
+		
+		function wp_head() {
 			
 			global $dl_pluginissuem_leaky_paywall;
-			
+						
 			$issuem_settings = $dl_pluginissuem_leaky_paywall->get_settings();
 			
 			$free_articles = array();
@@ -75,38 +94,58 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Count_Nag' ) ) {
             
             $articles_remainings = $issuem_settings['free_articles'] - count( $free_articles );
             
+            $remaining_text = ( 1 === $articles_remainings ) ? __( 'Article Remaining', 'issuem-lp-anc' ) : __( 'Articles Remaining', 'issuem-lp-anc' );
+            
 			$url = get_page_link( $issuem_settings['page_for_login'] );
+		
+			?>
 			
-			if ( 0 !== $articles_remainings ) {
+			<div class="acn-zero-remaining-overlay"></div>
+			<div id="issuem-leaky-paywall-articles-zero-remaining-nag">
+				<div id="issuem-leaky-paywall-articles-remaining"><?php echo $articles_remainings; ?></div>
+				<div id="issuem-leaky-paywall-articles-remaining-close">&nbsp;</div>
+				<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
+				<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $url; ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
+				<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo $url; ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
+			</div>
 			
+			<?php
+			
+		}
+		
+		function wp_footer() {
+			
+			global $dl_pluginissuem_leaky_paywall;
+						
+			$issuem_settings = $dl_pluginissuem_leaky_paywall->get_settings();
+			
+			$free_articles = array();
+
+            if ( !empty( $_COOKIE['issuem_lp'] ) )
+                $free_articles = maybe_unserialize( $_COOKIE['issuem_lp'] );
+            
+            $articles_remainings = $issuem_settings['free_articles'] - count( $free_articles );
+            
+            $remaining_text = ( 1 === $articles_remainings ) ? __( 'Article Remaining', 'issuem-lp-anc' ) : __( 'Articles Remaining', 'issuem-lp-anc' );
+            
+			$url = get_page_link( $issuem_settings['page_for_login'] );
+				
 			?>
 			
 			<div id="issuem-leaky-paywall-articles-remaining-nag">
 				<div id="issuem-leaky-paywall-articles-remaining"><?php echo $articles_remainings; ?></div>
 				<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
-				<div id="issuem-leaky-paywall-articles-remaining-text"><?php _e( 'Articles Remaining', 'issuem-lp-anc' ); ?></div>
+				<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
 				<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $url; ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
 				<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo $url; ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
 			</div>
 			
 			<?php
 			
-			} else {
-			
-			?>
-			
-			<div id="issuem-leaky-paywall-articles-zero-remaining-nag">
-				<div id="issuem-leaky-paywall-articles-remaining"><?php echo $articles_remainings; ?></div>
-				<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
-				<div id="issuem-leaky-paywall-articles-remaining-text"><?php _e( 'Articles Remaining', 'issuem-lp-anc' ); ?></div>
-				<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $url; ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
-				<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo $url; ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
-			</div>
-			
-			<?php
-				
-			}
-			
+		}
+		
+		function issuem_leaky_paywall_subscriber_or_login_message( $new_content, $message, $content ) {
+			return $content;
 		}
 		
 		/**

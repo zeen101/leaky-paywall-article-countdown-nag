@@ -52,6 +52,9 @@
     text-align: right;
     padding-top: 5px;
     padding-right: 5px;
+}
+
+#issuem-leaky-paywall-articles-remaining-nag #issuem-leaky-paywall-articles-remaining-close {
     cursor: pointer;
 }
 
@@ -63,7 +66,8 @@
     position: relative;
     float: right;
     color: #000;
-    padding-top: 25px;
+	font-size: 2em;
+	line-height: 1.3em;
 }
 
 #issuem-leaky-paywall-articles-remaining-nag #issuem-leaky-paywall-articles-remaining-subscribe-link,
@@ -75,9 +79,11 @@
     bottom: 25px;
     bottom: 0px;
     position: relative;
-    color: #0055ff;
+    color: #0011cc;
     text-align: center;
 	line-height: 1.6em;
+	font-weight: bold;
+	text-decoration: none;
 }
 
 #issuem-leaky-paywall-articles-remaining-nag #issuem-leaky-paywall-articles-remaining-login-link,
@@ -88,8 +94,9 @@
 	height: 25px;
     bottom: 0px;
     position: relative;
-    color: #00ccff;
+    color: #44ccff;
     background-color: #000;
     text-align: center;
 	line-height: 1.6em;
+	text-decoration: none;
 }
