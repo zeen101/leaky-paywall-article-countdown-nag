@@ -1,6 +1,6 @@
-var $issuem_leaky_paywall_article_count_nag = jQuery.noConflict();
+var $issuem_leaky_paywall_article_countdown_nag = jQuery.noConflict();
 
-$issuem_leaky_paywall_article_count_nag(document).ready(function($) {
+$issuem_leaky_paywall_article_countdown_nag(document).ready(function($) {
 
     $( window ).load( function() {
 
