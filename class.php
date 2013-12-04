@@ -48,9 +48,9 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		            if ( !empty( $_COOKIE['issuem_lp'] ) )
 		                $free_articles = maybe_unserialize( $_COOKIE['issuem_lp'] );
 		                            
-		            $articles_remainings = $issuem_settings['free_articles'] - countdown( $free_articles );
+		            $articles_remainings = $issuem_settings['free_articles'] - count( $free_articles );
 		                    
-		            if ( $settings['nag_after_countdown'] <= countdown( $free_articles ) ) {
+		            if ( $settings['nag_after_countdown'] <= count( $free_articles ) ) {
 						
 						add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 						
@@ -92,7 +92,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
             if ( !empty( $_COOKIE['issuem_lp'] ) )
                 $free_articles = maybe_unserialize( $_COOKIE['issuem_lp'] );
             
-            $articles_remainings = $issuem_settings['free_articles'] - countdown( $free_articles );
+            $articles_remainings = $issuem_settings['free_articles'] - count( $free_articles );
             
             $remaining_text = ( 1 === $articles_remainings ) ? __( 'Article Remaining', 'issuem-lp-anc' ) : __( 'Articles Remaining', 'issuem-lp-anc' );
             
@@ -124,7 +124,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
             if ( !empty( $_COOKIE['issuem_lp'] ) )
                 $free_articles = maybe_unserialize( $_COOKIE['issuem_lp'] );
             
-            $articles_remainings = $issuem_settings['free_articles'] - countdown( $free_articles );
+            $articles_remainings = $issuem_settings['free_articles'] - count( $free_articles );
             
             $remaining_text = ( 1 === $articles_remainings ) ? __( 'Article Remaining', 'issuem-lp-anc' ) : __( 'Articles Remaining', 'issuem-lp-anc' );
             
