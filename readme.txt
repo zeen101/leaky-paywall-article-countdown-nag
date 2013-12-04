@@ -1,5 +1,5 @@
 === IssueM - Leaky Paywall - Article Countdown Nag ===
-Contributors: layotte
+Contributors: layotte, peterericson
 Tags: metered, paywall, leaky, wordpress, magazine, news, blog, articles, remaining
 Requires at least: 3.0
 Tested up to: 3.7
