@@ -11,7 +11,7 @@ $issuem_leaky_paywall_article_countdown_nag(document).ready(function($) {
     $( '#issuem-leaky-paywall-articles-remaining-nag #issuem-leaky-paywall-articles-remaining-close' ).live( 'click', function(e) {
 
         e.preventDefault();
-        $( '#issuem-leaky-paywall-articles-remaining-nag' ).animate({ left:'-300px' });
+        $( '#issuem-leaky-paywall-articles-remaining-nag' ).animate({ left:'-351px' });
 
     });
 
