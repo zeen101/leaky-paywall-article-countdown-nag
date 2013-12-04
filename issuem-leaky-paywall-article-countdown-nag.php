@@ -2,12 +2,12 @@
 /**
  * Main PHP file used to for initial calls to IssueM's Leak Paywall classes and functions.
  *
- * @package IssueM's Leak Paywall - Article Count Nag
+ * @package IssueM's Leak Paywall - Article Countdown Nag
  * @since 1.0.0
  */
  
 /*
-Plugin Name: IssueM's Leaky Paywall - Article Count Nag
+Plugin Name: IssueM's Leaky Paywall - Article Countdown Nag
 Plugin URI: http://issuem.com/
 Description: A premium leaky paywall add-on for WordPress and IssueM.
 Author: IssueM Development Team
@@ -20,8 +20,8 @@ Tags:
 if ( !defined( 'ISSUEM_STORE_URL' ) )
 	define( 'ISSUEM_STORE_URL', 	'http://issuem.com' );
 	
-define( 'ISSUEM_LP_ACN_NAME', 		'Leaky Paywall - Article Count Nag' );
-define( 'ISSUEM_LP_ACN_SLUG', 		'issuem-leaky-paywall-article-count-nag' );
+define( 'ISSUEM_LP_ACN_NAME', 		'Leaky Paywall - Article Countdown Nag' );
+define( 'ISSUEM_LP_ACN_SLUG', 		'issuem-leaky-paywall-article-countdown-nag' );
 define( 'ISSUEM_LP_ACN_VERSION', 	'1.0.0' );
 define( 'ISSUEM_LP_ACN_DB_VERSION', '1.0.0' );
 define( 'ISSUEM_LP_ACN_URL', 		plugin_dir_url( __FILE__ ) );
@@ -34,7 +34,7 @@ define( 'ISSUEM_LP_ACN_REL_DIR', 	dirname( ISSUEM_LP_ACN_BASENAME ) );
  *
  * @since 1.0.0
  */
-function issuem_leaky_paywall_article_count_nag_plugins_loaded() {
+function issuem_leaky_paywall_article_countdown_nag_plugins_loaded() {
 	
 	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	if ( is_plugin_active( 'issuem/issuem.php' ) )
@@ -45,11 +45,11 @@ function issuem_leaky_paywall_article_count_nag_plugins_loaded() {
 	require_once( 'class.php' );
 
 	// Instantiate the Pigeon Pack class
-	if ( class_exists( 'IssueM_Leaky_Paywall_Article_Count_Nag' ) ) {
+	if ( class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		
-		global $dl_pluginissuem_leaky_paywall_article_count_nag;
+		global $dl_pluginissuem_leaky_paywall_article_countdown_nag;
 		
-		$dl_pluginissuem_leaky_paywall_article_count_nag = new IssueM_Leaky_Paywall_Article_Count_Nag();
+		$dl_pluginissuem_leaky_paywall_article_countdown_nag = new IssueM_Leaky_Paywall_Article_Countdown_Nag();
 		
 		require_once( 'functions.php' );
 			
@@ -59,4 +59,4 @@ function issuem_leaky_paywall_article_count_nag_plugins_loaded() {
 	}
 
 }
-add_action( 'plugins_loaded', 'issuem_leaky_paywall_article_count_nag_plugins_loaded', 4815162342 ); //wait for the plugins to be loaded before init
+add_action( 'plugins_loaded', 'issuem_leaky_paywall_article_countdown_nag_plugins_loaded', 4815162342 ); //wait for the plugins to be loaded before init

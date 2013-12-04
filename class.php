@@ -11,9 +11,9 @@
  *
  * @since 1.0.0
  */
-if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Count_Nag' ) ) {
+if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 	
-	class IssueM_Leaky_Paywall_Article_Count_Nag {
+	class IssueM_Leaky_Paywall_Article_Countdown_Nag {
 		
 		/**
 		 * Class constructor, puts things in motion
@@ -48,9 +48,9 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Count_Nag' ) ) {
 		            if ( !empty( $_COOKIE['issuem_lp'] ) )
 		                $free_articles = maybe_unserialize( $_COOKIE['issuem_lp'] );
 		                            
-		            $articles_remainings = $issuem_settings['free_articles'] - count( $free_articles );
+		            $articles_remainings = $issuem_settings['free_articles'] - countdown( $free_articles );
 		                    
-		            if ( $settings['nag_after_count'] <= count( $free_articles ) ) {
+		            if ( $settings['nag_after_countdown'] <= countdown( $free_articles ) ) {
 						
 						add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 						
@@ -72,8 +72,8 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Count_Nag' ) ) {
 		
 		function frontend_scripts() {
 			
-			wp_enqueue_script( 'issuem-leaky-paywall-article-count-nag', ISSUEM_LP_ACN_URL . '/js/article-count-nag.js', array( 'jquery' ), ISSUEM_LP_ACN_VERSION );
-			wp_enqueue_style( 'issuem-leaky-paywall-article-count-nag', ISSUEM_LP_ACN_URL . '/css/article-count-nag.css', '', ISSUEM_LP_ACN_VERSION );
+			wp_enqueue_script( 'issuem-leaky-paywall-article-countdown-nag', ISSUEM_LP_ACN_URL . '/js/article-countdown-nag.js', array( 'jquery' ), ISSUEM_LP_ACN_VERSION );
+			wp_enqueue_style( 'issuem-leaky-paywall-article-countdown-nag', ISSUEM_LP_ACN_URL . '/css/article-countdown-nag.css', '', ISSUEM_LP_ACN_VERSION );
 						
 		}
 		
@@ -92,7 +92,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Count_Nag' ) ) {
             if ( !empty( $_COOKIE['issuem_lp'] ) )
                 $free_articles = maybe_unserialize( $_COOKIE['issuem_lp'] );
             
-            $articles_remainings = $issuem_settings['free_articles'] - count( $free_articles );
+            $articles_remainings = $issuem_settings['free_articles'] - countdown( $free_articles );
             
             $remaining_text = ( 1 === $articles_remainings ) ? __( 'Article Remaining', 'issuem-lp-anc' ) : __( 'Articles Remaining', 'issuem-lp-anc' );
             
@@ -124,7 +124,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Count_Nag' ) ) {
             if ( !empty( $_COOKIE['issuem_lp'] ) )
                 $free_articles = maybe_unserialize( $_COOKIE['issuem_lp'] );
             
-            $articles_remainings = $issuem_settings['free_articles'] - count( $free_articles );
+            $articles_remainings = $issuem_settings['free_articles'] - countdown( $free_articles );
             
             $remaining_text = ( 1 === $articles_remainings ) ? __( 'Article Remaining', 'issuem-lp-anc' ) : __( 'Articles Remaining', 'issuem-lp-anc' );
             
@@ -149,19 +149,19 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Count_Nag' ) ) {
 		}
 		
 		/**
-		 * Get IssueM's Leaky Paywall - Article Count Nag options
+		 * Get IssueM's Leaky Paywall - Article Countdown Nag options
 		 *
 		 * @since 1.0.0
 		 */
 		function get_settings() {
 			
 			$defaults = array( 
-				'nag_after_count' => '0',
+				'nag_after_countdown' => '0',
 			);
 		
-			$defaults = apply_filters( 'issuem_leaky_paywall_article_count_nag_default_settings', $defaults );
+			$defaults = apply_filters( 'issuem_leaky_paywall_article_countdown_nag_default_settings', $defaults );
 			
-			$settings = get_option( 'issuem-leaky-paywall-article-count-nag' );
+			$settings = get_option( 'issuem-leaky-paywall-article-countdown-nag' );
 												
 			return wp_parse_args( $settings, $defaults );
 			
@@ -174,7 +174,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Count_Nag' ) ) {
 		 */
 		function update_settings( $settings ) {
 			
-			update_option( 'issuem-leaky-paywall-article-count-nag', $settings );
+			update_option( 'issuem-leaky-paywall-article-countdown-nag', $settings );
 			
 		}
 		
@@ -194,17 +194,17 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Count_Nag' ) ) {
             
                 <div class="handlediv" title="Click to toggle"><br /></div>
                 
-                <h3 class="hndle"><span><?php _e( 'Leaky Paywall - Article Count Nag', 'issuem-lp-anc' ); ?></span></h3>
+                <h3 class="hndle"><span><?php _e( 'Leaky Paywall - Article Countdown Nag', 'issuem-lp-anc' ); ?></span></h3>
                 
                 <div class="inside">
                 
-                <table id="issuem_leaky_paywall_article_count_nag">
+                <table id="issuem_leaky_paywall_article_countdown_nag">
                 
                     <tr>
                         <th><?php _e( 'Nag After Reading?', 'issuem-lp-anc' ); ?></th>
                         <td>
-                        <input type="text" value="<?php echo $settings['nag_after_count']; ?>" name="nag_after_count" /> <?php _e( 'articles', 'issuem-lp-anc' ); ?>
-                        <p class="description"><?php _e( 'This will show the article count nag popup after the user has read the given number of articles.' ); ?></p>
+                        <input type="text" value="<?php echo $settings['nag_after_countdown']; ?>" name="nag_after_countdown" /> <?php _e( 'articles', 'issuem-lp-anc' ); ?>
+                        <p class="description"><?php _e( 'This will show the article countdown nag popup after the user has read the given number of articles.' ); ?></p>
                         </td>
                     </tr>
                     
@@ -226,8 +226,8 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Count_Nag' ) ) {
 			// Get the user options
 			$settings = $this->get_settings();
 				
-			if ( !empty( $_REQUEST['nag_after_count'] ) )
-				$settings['nag_after_count'] = absint( trim( $_REQUEST['nag_after_count'] ) );
+			if ( !empty( $_REQUEST['nag_after_countdown'] ) )
+				$settings['nag_after_countdown'] = absint( trim( $_REQUEST['nag_after_countdown'] ) );
 			else
 				$settings['allowed_ip_addresses'] = '0';
 			
