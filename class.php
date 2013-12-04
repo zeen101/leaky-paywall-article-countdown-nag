@@ -103,8 +103,10 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			<div class="acn-zero-remaining-overlay"></div>
 			<div id="issuem-leaky-paywall-articles-zero-remaining-nag">
 				<div id="issuem-leaky-paywall-articles-remaining-close">&nbsp;</div>
-				<div id="issuem-leaky-paywall-articles-remaining"><?php echo $articles_remainings; ?></div>
-				<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
+				<div id="issuem-leaky-paywall-articles-remaining">
+					<div id="issuem-leaky-paywall-articles-remaining-count"><?php echo $articles_remainings; ?></div>
+					<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
+				</div>
 				<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $url; ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
 				<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo $url; ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
 			</div>
@@ -134,8 +136,11 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			<div id="issuem-leaky-paywall-articles-remaining-nag">
 				<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
-				<div id="issuem-leaky-paywall-articles-remaining"><?php echo $articles_remainings; ?></div>
-				<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
+				<div id="issuem-leaky-paywall-articles-remaining">
+					<div id="issuem-leaky-paywall-articles-remaining-count"><?php echo $articles_remainings; ?></div>
+					<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
+
+				</div>
 				<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $url; ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
 				<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo $url; ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
 			</div>
