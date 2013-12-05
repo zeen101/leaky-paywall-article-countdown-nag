@@ -13,6 +13,8 @@ Lets the reader know how many free articles/pages they have left before they nee
 Requires IssueM's Leaky Paywall plugin.
 More info at http://LeakyPW.com
 
+You can follow this plugins development on [GitHub](https://github.com/IssueM/issuem-leaky-paywall-article-countdown-nag)
+
 == Installation ==
 
 1. Upload the entire `issuem-leaky-paywall` folder to your `/wp-content/plugins/` folder.
