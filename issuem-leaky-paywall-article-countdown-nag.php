@@ -11,7 +11,7 @@ Plugin Name: IssueM's Leaky Paywall - Article Countdown Nag
 Plugin URI: http://issuem.com/
 Description: A premium leaky paywall add-on for WordPress and IssueM.
 Author: IssueM Development Team
-Version: 1.0.0
+Version: 1.0.1
 Author URI: http://issuem.com/
 Tags:
 */
@@ -22,7 +22,7 @@ if ( !defined( 'ISSUEM_STORE_URL' ) )
 	
 define( 'ISSUEM_LP_ACN_NAME', 		'Leaky Paywall - Article Countdown Nag' );
 define( 'ISSUEM_LP_ACN_SLUG', 		'issuem-leaky-paywall-article-countdown-nag' );
-define( 'ISSUEM_LP_ACN_VERSION', 	'1.0.0' );
+define( 'ISSUEM_LP_ACN_VERSION', 	'1.0.1' );
 define( 'ISSUEM_LP_ACN_DB_VERSION', 	'1.0.0' );
 define( 'ISSUEM_LP_ACN_URL', 		plugin_dir_url( __FILE__ ) );
 define( 'ISSUEM_LP_ACN_PATH', 		plugin_dir_path( __FILE__ ) );

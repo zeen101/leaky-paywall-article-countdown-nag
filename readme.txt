@@ -3,7 +3,7 @@ Contributors: layotte, peterericson
 Tags: metered, paywall, leaky, wordpress, magazine, news, blog, articles, remaining
 Requires at least: 3.0
 Tested up to: 3.7
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 
 Creates an Article Countdown Nag for IssueM's Leaky Paywall WordPress plugin. More info at http://LeakyPW.com
 
@@ -35,6 +35,9 @@ You must have:
 * Like IssueM, Leaky Paywall is GPL
 
 == Changelog ==
+= 1.0.1 =
+* Added some better default styling
+
 = 1.0.0 =
 * Initial Release
 
