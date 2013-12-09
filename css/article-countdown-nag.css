@@ -11,6 +11,9 @@
 	border-top: solid #000 thin;
 	border-right: solid #000 thin;
 	border-bottom: solid #000 thin;
+	font-family: 'PT Serif',Georgia,serif;
+	line-height: 1;
+	font-size: 14px;
 }
 
 #issuem-leaky-paywall-articles-zero-remaining-nag {
@@ -26,6 +29,9 @@
 	z-index: 4815162342;
 	background-color: #fff;
 	border: solid #000 thin;
+	font-family: 'PT Serif',Georgia,serif;
+	line-height: 1;
+	font-size: 14px;
 }
 
 #issuem-leaky-paywall-articles-remaining-nag #issuem-leaky-paywall-articles-remaining-close,
