@@ -37,33 +37,73 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			$issuem_settings = $dl_pluginissuem_leaky_paywall->get_settings();
 			
-			if ( is_singular( $issuem_settings['post_types'] ) ) {
-			
-				if ( !is_user_logged_in() && !is_issuem_leaky_subscriber_logged_in() ) {
-					
-					$settings = $this->get_settings();
-					
-					$free_articles = array();
-		
-		            if ( !empty( $_COOKIE['issuem_lp'] ) )
-		                $free_articles = maybe_unserialize( $_COOKIE['issuem_lp'] );
-		                            
-		            $articles_remainings = $issuem_settings['free_articles'] - count( $free_articles );
-		                    
-		            if ( $settings['nag_after_countdown'] <= count( $free_articles ) ) {
+			if ( is_single() ) {
 						
-						add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
-						
-						if ( 0 !== $articles_remainings || in_array( $post->ID, $free_articles )  ) {
-							add_action( 'wp_footer', array( $this, 'wp_footer' ) );
-						} else {
-							add_action( 'wp_enqueue_scripts', array( $this, 'zero_article_scripts' ) );
-							add_action( 'wp_head', array( $this, 'wp_head' ) );
-							add_filter( 'issuem_leaky_paywall_subscriber_or_login_message', array( $this, 'issuem_leaky_paywall_subscriber_or_login_message' ), 10, 3 );
-						}
-									
-					}
+				if ( !current_user_can( 'manage_options' ) ) { //Admins can see it all
 				
+					// We don't ever want to block the login, subscription
+					if ( !is_page( array( $issuem_settings['page_for_login'], $issuem_settings['page_for_subscription'] ) ) ) {
+					
+						$post_type_id = '';
+						$restricted_post_type = '';
+						$is_restricted = false;
+						$content_remaining = 0;
+						
+						$settings = $this->get_settings();
+						$restrictions = issuem_leaky_paywall_subscriber_restrictions();
+						
+						$available_content = array();
+									
+						if ( !empty( $_COOKIE['issuem_lp'] ) )
+							$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp'] ) );
+						
+						if ( !empty( $restrictions['post_types'] ) ) {
+							
+							foreach( $restrictions['post_types'] as $key => $restriction ) {
+								
+								if ( is_singular( $restriction['post_type'] ) ) {
+						
+									if ( 0 <= $restriction['allowed_value'] ) {
+									
+										$post_type_id = $key;
+										$restricted_post_type = $restriction['post_type'];
+										$is_restricted = true;
+										
+										if ( !empty( $available_content[$restricted_post_type] ) ) {
+											$content_remaining = $restriction['allowed_value'] - count( $available_content[$restricted_post_type] );
+										} else {
+											$content_remaining = $restriction['allowed_value'];
+										}
+										break;
+										
+									}
+									
+								}
+								
+							}
+						
+						}
+						
+						if ( $is_restricted ) {
+						        
+						    if ( $settings['nag_after_countdown'] >= $content_remaining ) {
+						    								
+								add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
+								
+								if ( 0 !== $content_remaining || array_key_exists( $post->ID, $available_content[$restricted_post_type] )  ) {
+									add_action( 'wp_footer', array( $this, 'wp_footer' ) );
+								} else {
+									add_action( 'wp_enqueue_scripts', array( $this, 'zero_article_scripts' ) );
+									add_action( 'wp_head', array( $this, 'wp_head' ) );
+									add_filter( 'issuem_leaky_paywall_subscriber_or_login_message', array( $this, 'issuem_leaky_paywall_subscriber_or_login_message' ), 10, 3 );
+								}
+											
+							}
+						
+						}
+						
+					}
+						
 				}
 			
 			}
@@ -83,18 +123,46 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		
 		function wp_head() {
 			
-			global $dl_pluginissuem_leaky_paywall;
+			global $dl_pluginissuem_leaky_paywall, $post;
 						
 			$issuem_settings = $dl_pluginissuem_leaky_paywall->get_settings();
-			
-			$free_articles = array();
+			$restrictions = issuem_leaky_paywall_subscriber_restrictions();
+			$available_content = array();
+			$content_remaining = 0;
 
             if ( !empty( $_COOKIE['issuem_lp'] ) )
-                $free_articles = maybe_unserialize( $_COOKIE['issuem_lp'] );
+				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp'] ) );
             
-            $articles_remainings = $issuem_settings['free_articles'] - count( $free_articles );
-            
-            $remaining_text = ( 1 === $articles_remainings ) ? __( 'Article Remaining', 'issuem-lp-anc' ) : __( 'Articles Remaining', 'issuem-lp-anc' );
+            if ( !empty( $restrictions['post_types'] ) ) {
+							
+				foreach( $restrictions['post_types'] as $key => $restriction ) {
+					
+					if ( is_singular( $restriction['post_type'] ) ) {
+			
+						if ( 0 <= $restriction['allowed_value'] ) {
+						
+							$post_type_id = $key;
+							$restricted_post_type = $restriction['post_type'];
+							
+							if ( !empty( $available_content[$restricted_post_type] ) ) {
+								$content_remaining = $restriction['allowed_value'] - count( $available_content[$restricted_post_type] );
+							} else {
+								$content_remaining = $restriction['allowed_value'];
+							}
+							break;
+							
+						}
+						
+					}
+					
+				}
+			
+			}
+			
+			$post_type_obj = get_post_type_object( $post->post_type );
+            $remaining_text = ( 1 === $content_remaining ) 
+            		?  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->singular_name )
+            		:  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->name );
             
 			$url = get_page_link( $issuem_settings['page_for_login'] );
 		
@@ -104,7 +172,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			<div id="issuem-leaky-paywall-articles-zero-remaining-nag">
 				<div id="issuem-leaky-paywall-articles-remaining-close">&nbsp;</div>
 				<div id="issuem-leaky-paywall-articles-remaining">
-					<div id="issuem-leaky-paywall-articles-remaining-count"><?php echo $articles_remainings; ?></div>
+					<div id="issuem-leaky-paywall-articles-remaining-count"><?php echo $content_remaining; ?></div>
 					<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
 				</div>
 				<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $url; ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
@@ -117,18 +185,46 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		
 		function wp_footer() {
 			
-			global $dl_pluginissuem_leaky_paywall;
+			global $dl_pluginissuem_leaky_paywall, $post;
 						
 			$issuem_settings = $dl_pluginissuem_leaky_paywall->get_settings();
-			
-			$free_articles = array();
+			$restrictions = issuem_leaky_paywall_subscriber_restrictions();
+			$available_content = array();
+			$content_remaining = 0;
 
             if ( !empty( $_COOKIE['issuem_lp'] ) )
-                $free_articles = maybe_unserialize( $_COOKIE['issuem_lp'] );
+				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp'] ) );
             
-            $articles_remainings = $issuem_settings['free_articles'] - count( $free_articles );
-            
-            $remaining_text = ( 1 === $articles_remainings ) ? __( 'Article Remaining', 'issuem-lp-anc' ) : __( 'Articles Remaining', 'issuem-lp-anc' );
+            if ( !empty( $restrictions['post_types'] ) ) {
+							
+				foreach( $restrictions['post_types'] as $key => $restriction ) {
+					
+					if ( is_singular( $restriction['post_type'] ) ) {
+			
+						if ( 0 <= $restriction['allowed_value'] ) {
+						
+							$post_type_id = $key;
+							$restricted_post_type = $restriction['post_type'];
+							
+							if ( !empty( $available_content[$restricted_post_type] ) ) {
+								$content_remaining = $restriction['allowed_value'] - count( $available_content[$restricted_post_type] );
+							} else {
+								$content_remaining = $restriction['allowed_value'];
+							}
+							break;
+							
+						}
+						
+					}
+					
+				}
+			
+			}
+
+			$post_type_obj = get_post_type_object( $post->post_type );
+            $remaining_text = ( 1 === $content_remaining ) 
+            		?  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->singular_name )
+            		:  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->name );
             
 			$url = get_page_link( $issuem_settings['page_for_login'] );
 				
@@ -137,7 +233,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			<div id="issuem-leaky-paywall-articles-remaining-nag">
 				<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
 				<div id="issuem-leaky-paywall-articles-remaining">
-					<div id="issuem-leaky-paywall-articles-remaining-count"><?php echo $articles_remainings; ?></div>
+					<div id="issuem-leaky-paywall-articles-remaining-count"><?php echo $content_remaining; ?></div>
 					<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
 
 				</div>
