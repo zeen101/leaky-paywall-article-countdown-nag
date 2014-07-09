@@ -37,7 +37,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			$issuem_settings = $dl_pluginissuem_leaky_paywall->get_settings();
 			
-			if ( is_single() ) {
+			if ( is_singular() ) {
 						
 				if ( !current_user_can( 'manage_options' ) ) { //Admins can see it all
 				
