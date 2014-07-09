@@ -67,12 +67,13 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 									
 										$post_type_id = $key;
 										$restricted_post_type = $restriction['post_type'];
+										$allowed_value = $restriction['allowed_value'];
 										$is_restricted = true;
 										
 										if ( !empty( $available_content[$restricted_post_type] ) ) {
-											$content_remaining = $restriction['allowed_value'] - count( $available_content[$restricted_post_type] );
+											$content_remaining = $allowed_value - count( $available_content[$restricted_post_type] );
 										} else {
-											$content_remaining = $restriction['allowed_value'];
+											$content_remaining = $allowed_value;
 										}
 										break;
 										
@@ -85,8 +86,8 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 						}
 						
 						if ( $is_restricted ) {
-						        
-						    if ( $settings['nag_after_countdown'] >= $content_remaining ) {
+												        
+						    if ( $settings['nag_after_countdown'] <= $allowed_value - $content_remaining ) {
 						    								
 								add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 								
