@@ -1,0 +1,114 @@
+#issuem-leaky-paywall-articles-remaining-nag {
+	background: #aaa;
+	position: fixed;
+	bottom: 25px;
+	overflow: hidden;
+	width: 300px;
+	left: -325px;
+	z-index: 4815162342;
+	height: 50px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing:    border-box;
+	box-sizing:         border-box;
+}
+
+#issuem-leaky-paywall-articles-remaining-close {
+	position: absolute;
+	top: 0px;
+	right: 8px;
+	cursor: pointer;
+	color: #333;
+}
+
+#issuem-leaky-paywall-articles-remaining-count {
+	background: #000;
+	float: left;
+	color: #fff;
+	font-size: 2em;
+	width: 20%;
+	text-align: center;
+	height: 50px;
+	margin-bottom: 0;
+}
+
+#issuem-leaky-paywall-articles-remaining-count p {
+	margin: 0;
+	padding: 0;
+	line-height: 50px;
+}
+
+#issuem-leaky-paywall-articles-remaining {
+	float: left;
+	background: #aaa;
+	width: 72%;
+	padding: 8px 4%;
+	text-transform: uppercase;
+}
+
+#issuem-leaky-paywall-articles-remaining p {
+	margin: 0 5px 0 0;
+}
+
+#issuem-leaky-paywall-articles-remaining-text {
+	color: #000;
+	margin: 0;
+	line-height: 1;
+}
+
+#issuem-leaky-paywall-articles-remaining-subscribe-link {
+	font-weight: bold;
+	margin-bottom: 0;
+}
+#issuem-leaky-paywall-articles-remaining-login-link {
+	margin-bottom: 0;
+	
+}
+
+#issuem-leaky-paywall-articles-zero-remaining-nag  {
+	display: block;
+	width: 300px;
+	height: 245px;
+	overflow: hidden;
+	position: fixed;
+	border-bottom: 2px solid #666;
+	top: 50%;
+	left: 50%;
+	margin-top: -160px;
+	margin-left: -172px;
+	padding: 40px 40px;
+	z-index: 4815162342;
+	background-color: #fff;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+	line-height: 1;	
+	background: #000;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing:    border-box;
+	box-sizing:         border-box;
+}
+
+#issuem-leaky-paywall-articles-zero-remaining-nag #issuem-leaky-paywall-articles-remaining-close {
+	color: #fff;
+}
+
+#issuem-leaky-paywall-articles-zero-remaining-nag #issuem-leaky-paywall-articles-remaining {
+	background: transparent;
+	width: 100%;
+	padding: 0;
+	float: none;
+	overflow: hidden;
+	margin-bottom: 40px;
+}
+
+#issuem-leaky-paywall-articles-zero-remaining-nag #issuem-leaky-paywall-articles-remaining-count {
+	font-size: 3em;
+	text-align: left;
+}
+#issuem-leaky-paywall-articles-zero-remaining-nag #issuem-leaky-paywall-articles-remaining-text {
+	color: #fff;
+	line-height: 35px;
+}
+
+
+#issuem-leaky-paywall-articles-zero-remaining-nag #issuem-leaky-paywall-articles-remaining-subscribe-link {
+	margin-bottom: 10px;
+}
