@@ -112,9 +112,16 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		}
 		
 		function frontend_scripts() {
-			
+
+			$settings = $this->get_settings();
+
 			wp_enqueue_script( 'issuem-leaky-paywall-article-countdown-nag', ISSUEM_LP_ACN_URL . '/js/article-countdown-nag.js', array( 'jquery' ), ISSUEM_LP_ACN_VERSION );
-			wp_enqueue_style( 'issuem-leaky-paywall-article-countdown-nag', ISSUEM_LP_ACN_URL . '/css/article-countdown-nag.css', '', ISSUEM_LP_ACN_VERSION );
+
+			if ( $settings['nag_theme'] == 'slim' ) {
+				wp_enqueue_style( 'issuem-leaky-paywall-article-countdown-nag', ISSUEM_LP_ACN_URL . '/css/article-countdown-nag-slim.css', '', ISSUEM_LP_ACN_VERSION );
+			} else {
+				wp_enqueue_style( 'issuem-leaky-paywall-article-countdown-nag', ISSUEM_LP_ACN_URL . '/css/article-countdown-nag.css', '', ISSUEM_LP_ACN_VERSION );
+			}
 						
 		}
 		
@@ -228,19 +235,52 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
             		:  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->name );
             
 			$url = get_page_link( $issuem_settings['page_for_login'] );
-				
-			?>
-			
-			<div id="issuem-leaky-paywall-articles-remaining-nag">
-				<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
+
+			$settings = $this->get_settings();
+
+			if ( $settings['nag_theme'] == 'slim' ) {
+				?>
+				<div id="issuem-leaky-paywall-articles-remaining-nag">
+					<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
+
+					<div id="issuem-leaky-paywall-articles-remaining-count">
+						<p><?php echo $content_remaining; ?></p>
+					</div>
+
 				<div id="issuem-leaky-paywall-articles-remaining">
-					<div id="issuem-leaky-paywall-articles-remaining-count"><?php echo $content_remaining; ?></div>
+					
 					<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
 
+					<p>
+						<span id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $url; ?>"><?php _e( 'Subscribe', 'issuem-lp-anc' ); ?></a></span> 
+						| 
+						<span id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo $url; ?>"><?php _e( 'Login', 'issuem-lp-anc' ); ?></a></span>
+					</p>
+
 				</div>
-				<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $url; ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
-				<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo $url; ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
-			</div>
+				</div>
+
+			<?php } else { ?>
+
+				<div id="issuem-leaky-paywall-articles-remaining-nag">
+					<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
+					<div id="issuem-leaky-paywall-articles-remaining">
+						<div id="issuem-leaky-paywall-articles-remaining-count"><?php echo $content_remaining; ?></div>
+						<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
+
+					</div>
+					<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $url; ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
+					<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo $url; ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
+				</div>
+			
+
+			<?php }
+				
+			?>
+
+
+			
+			
 			
 			<?php
 			
@@ -259,6 +299,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			$defaults = array( 
 				'nag_after_countdown' => '0',
+				'nag_theme' => 'default'
 			);
 		
 			$defaults = apply_filters( 'issuem_leaky_paywall_article_countdown_nag_default_settings', $defaults );
@@ -300,13 +341,26 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
                 
                 <div class="inside">
                 
-                <table id="issuem_leaky_paywall_article_countdown_nag">
+                <table id="issuem_leaky_paywall_article_countdown_nag" class="form-table">
                 
                     <tr>
                         <th><?php _e( 'Nag After Reading?', 'issuem-lp-anc' ); ?></th>
                         <td>
                         <input type="text" value="<?php echo $settings['nag_after_countdown']; ?>" name="nag_after_countdown" /> <?php _e( 'articles', 'issuem-lp-anc' ); ?>
                         <p class="description"><?php _e( 'This will show the article countdown nag popup after the user has read the given number of articles.' ); ?></p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th><?php _e( 'Nag Theme', 'issuem-lp-anc' ); ?></th>
+                        <td>
+                      
+	                        <select id="nag_theme" name="nag_theme">
+	                             <option value="default" <?php selected( 'default' === $settings['nag_theme'] ); ?>><?php _e( 'Default', 'issuem-lp-anc' ); ?></option>
+	                             <option value="slim" <?php selected( 'slim' === $settings['nag_theme'] ); ?>><?php _e( 'Slim', 'issuem-lp-anc' ); ?></option>
+	                        </select>
+
+                        <p class="description"><?php _e( 'Choose theme for article countdown nag popup.' ); ?></p>
                         </td>
                     </tr>
                     
@@ -332,6 +386,9 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 				$settings['nag_after_countdown'] = absint( trim( $_REQUEST['nag_after_countdown'] ) );
 			else
 				$settings['allowed_ip_addresses'] = '0';
+
+			if ( !empty( $_REQUEST['nag_theme'] ) )
+					$settings['nag_theme'] = $_REQUEST['nag_theme'];
 			
 			$this->update_settings( $settings );
 			
