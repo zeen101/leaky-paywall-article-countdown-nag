@@ -42,21 +42,37 @@ function issuem_leaky_paywall_article_countdown_nag_plugins_loaded() {
 	else
 		define( 'ISSUEM_ACTIVE_LP_ACN', false );
 
-	require_once( 'class.php' );
+	if ( is_plugin_active( 'issuem-leaky-paywall/issuem-leaky-paywall.php' ) ) {
 
-	// Instantiate the Pigeon Pack class
-	if ( class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
+		require_once( 'class.php' );
 		
-		global $dl_pluginissuem_leaky_paywall_article_countdown_nag;
-		
-		$dl_pluginissuem_leaky_paywall_article_countdown_nag = new IssueM_Leaky_Paywall_Article_Countdown_Nag();
-		
-		require_once( 'functions.php' );
+		// Instantiate the Pigeon Pack class
+		if ( class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
-		//Internationalization
-		load_plugin_textdomain( 'issuem-lp-acn', false, ISSUEM_LP_ACN_REL_DIR . '/i18n/' );
+			global $dl_pluginissuem_leaky_paywall_article_countdown_nag;
 			
+			$dl_pluginissuem_leaky_paywall_article_countdown_nag = new IssueM_Leaky_Paywall_Article_Countdown_Nag();
+			
+			require_once( 'functions.php' );
+				
+			//Internationalization
+			load_plugin_textdomain( 'issuem-lp-acn', false, ISSUEM_LP_ACN_REL_DIR . '/i18n/' );
+				
+		}
+	
+	} else {
+	
+		add_action( 'admin_notices', 'issuem_leaky_paywall_article_countdown_nag_requirement_nag' );
+		
 	}
 
 }
 add_action( 'plugins_loaded', 'issuem_leaky_paywall_article_countdown_nag_plugins_loaded', 4815162342 ); //wait for the plugins to be loaded before init
+
+function issuem_leaky_paywall_article_countdown_nag_requirement_nag() {
+	?>
+	<div id="leaky-paywall-requirement-nag" class="update-nag">
+		<?php _e( 'You must have the Leaky Paywall plugin activated to use the Leaky Paywall Countdown Nag plugin.' ); ?>
+	</div>
+	<?php
+}
