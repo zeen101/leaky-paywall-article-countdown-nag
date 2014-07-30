@@ -28,23 +28,23 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			add_action( 'wp', array( $this, 'process_requests' ), 15 );
 			
-			add_action( 'issuem_leaky_paywall_settings_form', array( $this, 'settings_div' ) );
-			add_action( 'issuem_leaky_paywall_update_settings', array( $this, 'update_settings_div' ) );
+			add_action( 'leaky_paywall_settings_form', array( $this, 'settings_div' ) );
+			add_action( 'leaky_paywall_update_settings', array( $this, 'update_settings_div' ) );
 			
 		}
 		
 		function process_requests() {
 			
-			global $dl_pluginissuem_leaky_paywall, $post;
+			global $leaky_paywall, $post;
 			
-			$issuem_settings = $dl_pluginissuem_leaky_paywall->get_settings();
+			$lp_settings = $leaky_paywall->get_settings();
 			
 			if ( is_singular() ) {
 						
 				if ( !current_user_can( 'manage_options' ) ) { //Admins can see it all
 				
 					// We don't ever want to block the login, subscription
-					if ( !is_page( array( $issuem_settings['page_for_login'], $issuem_settings['page_for_subscription'] ) ) ) {
+					if ( !is_page( array( $lp_settings['page_for_login'], $lp_settings['page_for_subscription'] ) ) ) {
 					
 						$post_type_id = '';
 						$restricted_post_type = '';
@@ -52,7 +52,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 						$content_remaining = 0;
 						
 						$settings = $this->get_settings();
-						$restrictions = issuem_leaky_paywall_subscriber_restrictions();
+						$restrictions = leaky_paywall_subscriber_restrictions();
 						
 						$available_content = array();
 									
@@ -98,7 +98,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 								} else {
 									add_action( 'wp_enqueue_scripts', array( $this, 'zero_article_scripts' ) );
 									add_action( 'wp_head', array( $this, 'wp_head' ) );
-									add_filter( 'issuem_leaky_paywall_subscriber_or_login_message', array( $this, 'issuem_leaky_paywall_subscriber_or_login_message' ), 10, 3 );
+									add_filter( 'leaky_paywall_subscriber_or_login_message', array( $this, 'leaky_paywall_subscriber_or_login_message' ), 10, 3 );
 								}
 											
 							}
@@ -133,10 +133,10 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		
 		function wp_head() {
 			
-			global $dl_pluginissuem_leaky_paywall, $post;
+			global $leaky_paywall, $post;
 						
-			$issuem_settings = $dl_pluginissuem_leaky_paywall->get_settings();
-			$restrictions = issuem_leaky_paywall_subscriber_restrictions();
+			$lp_settings = $leaky_paywall->get_settings();
+			$restrictions = leaky_paywall_subscriber_restrictions();
 			$available_content = array();
 			$content_remaining = 0;
 
@@ -174,7 +174,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
             		?  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->singular_name )
             		:  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->name );
             
-			$url = get_page_link( $issuem_settings['page_for_login'] );
+			$url = get_page_link( $lp_settings['page_for_login'] );
 		
 			?>
 			
@@ -195,10 +195,10 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		
 		function wp_footer() {
 			
-			global $dl_pluginissuem_leaky_paywall, $post;
+			global $leaky_paywall, $post;
 						
-			$issuem_settings = $dl_pluginissuem_leaky_paywall->get_settings();
-			$restrictions = issuem_leaky_paywall_subscriber_restrictions();
+			$lp_settings = $leaky_paywall->get_settings();
+			$restrictions = leaky_paywall_subscriber_restrictions();
 			$available_content = array();
 			$content_remaining = 0;
 
@@ -236,7 +236,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
             		?  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->singular_name )
             		:  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->name );
             
-			$url = get_page_link( $issuem_settings['page_for_login'] );
+			$url = get_page_link( $lp_settings['page_for_login'] );
 
 			$settings = $this->get_settings();
 
@@ -288,7 +288,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 		}
 		
-		function issuem_leaky_paywall_subscriber_or_login_message( $new_content, $message, $content ) {
+		function leaky_paywall_subscriber_or_login_message( $new_content, $message, $content ) {
 			return $content;
 		}
 		
@@ -304,7 +304,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 				'nag_theme' => 'default'
 			);
 		
-			$defaults = apply_filters( 'issuem_leaky_paywall_article_countdown_nag_default_settings', $defaults );
+			$defaults = apply_filters( 'leaky_paywall_article_countdown_nag_default_settings', $defaults );
 			
 			$settings = get_option( 'issuem-leaky-paywall-article-countdown-nag' );
 												
@@ -343,7 +343,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
                 
                 <div class="inside">
                 
-                <table id="issuem_leaky_paywall_article_countdown_nag" class="form-table">
+                <table id="leaky_paywall_article_countdown_nag" class="form-table">
                 
                     <tr>
                         <th><?php _e( 'Nag After Reading?', 'issuem-lp-anc' ); ?></th>
@@ -369,7 +369,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
                 </table>
                                                                   
                 <p class="submit">
-                    <input class="button-primary" type="submit" name="update_issuem_leaky_paywall_settings" value="<?php _e( 'Save Settings', 'issuem-lp-anc' ) ?>" />
+                    <input class="button-primary" type="submit" name="update_leaky_paywall_settings" value="<?php _e( 'Save Settings', 'issuem-lp-anc' ) ?>" />
                 </p>
 
                 </div>

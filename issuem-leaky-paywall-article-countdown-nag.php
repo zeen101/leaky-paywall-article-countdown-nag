@@ -34,7 +34,7 @@ define( 'LP_ACN_REL_DIR', 	dirname( LP_ACN_BASENAME ) );
  *
  * @since 1.0.0
  */
-function issuem_leaky_paywall_article_countdown_nag_plugins_loaded() {
+function leaky_paywall_article_countdown_nag_plugins_loaded() {
 	
 	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	if ( is_plugin_active( 'issuem/issuem.php' ) )
@@ -49,9 +49,9 @@ function issuem_leaky_paywall_article_countdown_nag_plugins_loaded() {
 		// Instantiate the Pigeon Pack class
 		if ( class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
-			global $dl_pluginissuem_leaky_paywall_article_countdown_nag;
+			global $leaky_paywall_article_countdown_nag;
 			
-			$dl_pluginissuem_leaky_paywall_article_countdown_nag = new Leaky_Paywall_Article_Countdown_Nag();
+			$leaky_paywall_article_countdown_nag = new Leaky_Paywall_Article_Countdown_Nag();
 			
 			require_once( 'functions.php' );
 				
@@ -62,14 +62,14 @@ function issuem_leaky_paywall_article_countdown_nag_plugins_loaded() {
 	
 	} else {
 	
-		add_action( 'admin_notices', 'issuem_leaky_paywall_article_countdown_nag_requirement_nag' );
+		add_action( 'admin_notices', 'leaky_paywall_article_countdown_nag_requirement_nag' );
 		
 	}
 
 }
-add_action( 'plugins_loaded', 'issuem_leaky_paywall_article_countdown_nag_plugins_loaded', 4815162342 ); //wait for the plugins to be loaded before init
+add_action( 'plugins_loaded', 'leaky_paywall_article_countdown_nag_plugins_loaded', 4815162342 ); //wait for the plugins to be loaded before init
 
-function issuem_leaky_paywall_article_countdown_nag_requirement_nag() {
+function leaky_paywall_article_countdown_nag_requirement_nag() {
 	?>
 	<div id="leaky-paywall-requirement-nag" class="update-nag">
 		<?php _e( 'You must have the Leaky Paywall plugin activated to use the Leaky Paywall Countdown Nag plugin.' ); ?>
