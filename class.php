@@ -1,8 +1,8 @@
 <?php
 /**
- * Registers IssueM's Leaky Paywall class
+ * Registers zeen101's Leaky Paywall class
  *
- * @package IssueM's Leaky Paywall
+ * @package zeen101's Leaky Paywall - Article Countdown Nag
  * @since 1.0.0
  */
 
@@ -11,9 +11,9 @@
  *
  * @since 1.0.0
  */
-if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
+if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 	
-	class IssueM_Leaky_Paywall_Article_Countdown_Nag {
+	class Leaky_Paywall_Article_Countdown_Nag {
 		
 		/**
 		 * Class constructor, puts things in motion
@@ -117,18 +117,18 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 
 			$settings = $this->get_settings();
 
-			wp_enqueue_script( 'issuem-leaky-paywall-article-countdown-nag', ISSUEM_LP_ACN_URL . '/js/article-countdown-nag.js', array( 'jquery' ), ISSUEM_LP_ACN_VERSION );
+			wp_enqueue_script( 'issuem-leaky-paywall-article-countdown-nag', LP_ACN_URL . '/js/article-countdown-nag.js', array( 'jquery' ), LP_ACN_VERSION );
 
 			if ( $settings['nag_theme'] == 'slim' ) {
-				wp_enqueue_style( 'issuem-leaky-paywall-article-countdown-nag', ISSUEM_LP_ACN_URL . '/css/article-countdown-nag-slim.css', '', ISSUEM_LP_ACN_VERSION );
+				wp_enqueue_style( 'issuem-leaky-paywall-article-countdown-nag', LP_ACN_URL . '/css/article-countdown-nag-slim.css', '', LP_ACN_VERSION );
 			} else {
-				wp_enqueue_style( 'issuem-leaky-paywall-article-countdown-nag', ISSUEM_LP_ACN_URL . '/css/article-countdown-nag.css', '', ISSUEM_LP_ACN_VERSION );
+				wp_enqueue_style( 'issuem-leaky-paywall-article-countdown-nag', LP_ACN_URL . '/css/article-countdown-nag.css', '', LP_ACN_VERSION );
 			}
 						
 		}
 		
 		function zero_article_scripts() {
-				wp_enqueue_style( 'issuem-leaky-paywall-zero-articles', ISSUEM_LP_ACN_URL . '/css/acn-zero-articles.css', '', ISSUEM_LP_ACN_VERSION );
+				wp_enqueue_style( 'issuem-leaky-paywall-zero-articles', LP_ACN_URL . '/css/acn-zero-articles.css', '', LP_ACN_VERSION );
 		}
 		
 		function wp_head() {
@@ -293,7 +293,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		}
 		
 		/**
-		 * Get IssueM's Leaky Paywall - Article Countdown Nag options
+		 * Get zeen101's Leaky Paywall - Article Countdown Nag options
 		 *
 		 * @since 1.0.0
 		 */
@@ -313,7 +313,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		}
 		
 		/**
-		 * Update IssueM's Leaky Paywall options
+		 * Update zeen101's Leaky Paywall options
 		 *
 		 * @since 1.0.0
 		 */
@@ -324,7 +324,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		}
 		
 		/**
-		 * Create and Display IssueM settings page
+		 * Create and Display settings page
 		 *
 		 * @since 1.0.0
 		 */

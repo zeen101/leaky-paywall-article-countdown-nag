@@ -1,6 +1,6 @@
 <?php
 /**
- * @package IssueM's Leaky Paywall - Article Count Nag
+ * @package zeen101's Leaky Paywall - Article Countdown Nag
  * @since 1.0.0
  */
 
