@@ -28,7 +28,7 @@ You must have:
 
 * WordPress 3.3 or later
 * PHP 5
-* zeen101's Leaky Paywall version 1.1.0 or later
+* zeen101's Leaky Paywall version 2.0.0 or later
 
 = How is zeen101's Leaky Paywall Licensed? =
 
