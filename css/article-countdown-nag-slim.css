@@ -59,9 +59,15 @@
 	font-weight: bold;
 	margin-bottom: 0;
 }
+#issuem-leaky-paywall-articles-remaining-subscribe-link a {
+	color: #fff;
+}
 #issuem-leaky-paywall-articles-remaining-login-link {
 	margin-bottom: 0;
 	
+}
+#issuem-leaky-paywall-articles-remaining-login-link a {
+	color: #fff;
 }
 
 #issuem-leaky-paywall-articles-zero-remaining-nag  {
