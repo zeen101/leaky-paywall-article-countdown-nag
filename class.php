@@ -279,14 +279,6 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 
 			<?php }
-				
-			?>
-
-
-			
-			
-			
-			<?php
 			
 		}
 		
