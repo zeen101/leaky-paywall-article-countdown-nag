@@ -2,8 +2,8 @@
 Contributors: layotte, peterericson
 Tags: metered, paywall, leaky, wordpress, magazine, news, blog, articles, remaining
 Requires at least: 3.0
-Tested up to: 3.9
-Stable tag: 2.0.0
+Tested up to: 4.0
+Stable tag: 2.0.1
 
 Creates an Article Countdown Nag for zeen101's Leaky Paywall WordPress plugin. More info at http://zeen101.com
 
@@ -35,6 +35,11 @@ You must have:
 * Leaky Paywall - Article Countdown Nag is GPL
 
 == Changelog ==
+= 2.0.1 =
+* Removed unused lines
+* Styling fix for slim view
+* Set subscriber and login link separated
+
 = 2.0.0 =
 * Updating IssueM references to point to zeen101
 * Setup nag to make sure Leaky Paywall is activated and at least version 2.0.0 in order to use this addon
