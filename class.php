@@ -40,7 +40,14 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			$lp_settings = $leaky_paywall->get_settings();
 			
 			if ( is_singular() ) {
-						
+				
+				global $blog_id;
+				if ( is_multisite() ){
+					$site = '_' . $blog_id;
+				} else {
+					$site = '';
+				}
+									
 				if ( !current_user_can( 'manage_options' ) ) { //Admins can see it all
 				
 					// We don't ever want to block the login, subscription
@@ -56,8 +63,8 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 						
 						$available_content = array();
 									
-						if ( !empty( $_COOKIE['issuem_lp'] ) )
-							$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp'] ) );
+						if ( !empty( $_COOKIE['issuem_lp' . $site] ) )
+							$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );
 						
 						if ( !empty( $restrictions['post_types'] ) ) {
 							
@@ -133,15 +140,21 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		
 		function wp_head() {
 			
-			global $leaky_paywall, $post;
+			global $leaky_paywall, $post, $blog_id;
+			
+			if ( is_multisite() ){
+				$site = '_' . $blog_id;
+			} else {
+				$site = '';
+			}
 						
 			$lp_settings = $leaky_paywall->get_settings();
 			$restrictions = leaky_paywall_subscriber_restrictions();
 			$available_content = array();
 			$content_remaining = 0;
 
-            if ( !empty( $_COOKIE['issuem_lp'] ) )
-				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp'] ) );
+            if ( !empty( $_COOKIE['issuem_lp' . $site] ) )
+				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );
             
             if ( !empty( $restrictions['post_types'] ) ) {
 							
@@ -196,15 +209,21 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		
 		function wp_footer() {
 			
-			global $leaky_paywall, $post;
-						
+			global $leaky_paywall, $post, $blog_id;
+			
+			if ( is_multisite() ){
+				$site = '_' . $blog_id;
+			} else {
+				$site = '';
+			}
+			
 			$lp_settings = $leaky_paywall->get_settings();
 			$restrictions = leaky_paywall_subscriber_restrictions();
 			$available_content = array();
 			$content_remaining = 0;
 
-            if ( !empty( $_COOKIE['issuem_lp'] ) )
-				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp'] ) );
+            if ( !empty( $_COOKIE['issuem_lp' . $site] ) )
+				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );
             
             if ( !empty( $restrictions['post_types'] ) ) {
 							
