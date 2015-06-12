@@ -5,13 +5,13 @@ Requires at least: 3.0
 Tested up to: 4.1
 Stable tag: 2.0.2
 
-Creates an Article Countdown Nag for zeen101's Leaky Paywall WordPress plugin. More info at http://zeen101.com
+Creates an <a href="https://zeen101.com/downloads/article-countdown-nag-free/">Article Countdown Nag</a> for zeen101's Leaky Paywall WordPress plugin. More info at http://zeen101.com
 
 == Description ==
 
 Lets the reader know how many free articles/pages they have left before they need to subscribe.
 Requires zeen101's Leaky Paywall plugin.
-More info at http://zeen101.com
+More info at <a href="https://zeen101.com/">ZEEN101.com</a>
 
 You can follow this plugins development on [GitHub](https://github.com/zeen101/issuem-leaky-paywall-article-countdown-nag)
 
