@@ -65,10 +65,11 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 									
 						if ( !empty( $_COOKIE['issuem_lp' . $site] ) )
 							$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );
-						
-						if ( !empty( $restrictions ) ) {	
 							
+						
+						if ( !empty( $restrictions ) ) {
 							foreach( $restrictions as $key => $restriction ) {
+
 								
 								if ( is_singular( $restriction['post_type'] ) ) {
 						
@@ -94,15 +95,17 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 						
 						}
 						
+
 						if ( $is_restricted ) {
 												        
 						    if ( $settings['nag_after_countdown'] <= $allowed_value - $content_remaining ) {
 						    								
 								add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
-								
 								if ( 0 !== $content_remaining || array_key_exists( $post->ID, $available_content[$restricted_post_type] )  ) {
+			
 									add_action( 'wp_footer', array( $this, 'wp_footer' ) );
 								} else {
+
 									add_action( 'wp_enqueue_scripts', array( $this, 'zero_article_scripts' ) );
 									add_action( 'wp_head', array( $this, 'wp_head' ) );
 									add_filter( 'leaky_paywall_subscriber_or_login_message', array( $this, 'leaky_paywall_subscriber_or_login_message' ), 10, 3 );
@@ -208,6 +211,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		}
 		
 		function wp_footer() {
+
 			
 			global $leaky_paywall, $post, $blog_id;
 			
@@ -219,23 +223,27 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			$lp_settings = $leaky_paywall->get_settings();
 			$restrictions = leaky_paywall_subscriber_restrictions();
+
+			
 			$available_content = array();
 			$content_remaining = 0;
 
             if ( !empty( $_COOKIE['issuem_lp' . $site] ) )
 				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );
-            
-            if ( !empty( $restrictions['post_types'] ) ) {
-							
-				foreach( $restrictions['post_types'] as $key => $restriction ) {
+
+
+            if ( !empty( $restrictions) ) {
+
+
+				foreach( $restrictions as $key => $restriction ) {
 					
 					if ( is_singular( $restriction['post_type'] ) ) {
+
 			
 						if ( 0 <= $restriction['allowed_value'] ) {
 						
 							$post_type_id = $key;
 							$restricted_post_type = $restriction['post_type'];
-							
 							if ( !empty( $available_content[$restricted_post_type] ) ) {
 								$content_remaining = $restriction['allowed_value'] - count( $available_content[$restricted_post_type] );
 							} else {
