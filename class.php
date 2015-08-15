@@ -32,7 +32,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			add_action( 'leaky_paywall_update_settings', array( $this, 'update_settings_div' ) );
 			
 		}
-		
+
 		function process_requests() {
 			
 			global $leaky_paywall, $post;
@@ -51,7 +51,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 				if ( !current_user_can( 'manage_options' ) ) { //Admins can see it all
 					
 					// We don't ever want to block the login, subscription
-					if ( !is_page( array( $settings['page_for_login'], $settings['page_for_subscription'], $settings['page_for_profile'] ) ) ) {
+					if ( !is_page( array( $lp_settings['page_for_login'], $lp_settings['page_for_subscription'], $lp_settings['page_for_profile'] ) ) ) {
 						
 						$post_type_id = '';
 						$restricted_post_type = '';
@@ -62,11 +62,9 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 						$restrictions = leaky_paywall_subscriber_restrictions();
 						
 						$available_content = array();
-									
-						if ( !empty( $_COOKIE['issuem_lp' . $site] ) )
+					
+					if ( !empty( $_COOKIE['issuem_lp' . $site] ) )
 							$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );
-							
-						
 						if ( !empty( $restrictions ) ) {
 							foreach( $restrictions as $key => $restriction ) {
 
@@ -94,7 +92,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 							}
 						
 						}
-						
+
 
 						if ( $is_restricted ) {
 												        
@@ -145,6 +143,8 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			global $leaky_paywall, $post, $blog_id;
 			
+
+
 			if ( is_multisite() ){
 				$site = '_' . $blog_id;
 			} else {
@@ -431,6 +431,8 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			
 		}
+
+		
 		
 	}
 	
