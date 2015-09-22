@@ -37,7 +37,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			global $leaky_paywall, $post;
 			
-			$lp_settings = $leaky_paywall->get_settings();
+			$lp_settings = get_leaky_paywall_settings();
 			
 			if ( is_singular() ) {
 				
@@ -51,7 +51,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 				if ( !current_user_can( 'manage_options' ) ) { //Admins can see it all
 					
 					// We don't ever want to block the login, subscription
-					if ( !is_page( array( $settings['page_for_login'], $settings['page_for_subscription'], $settings['page_for_profile'] ) ) ) {
+					if ( !is_page( array( $lp_settings['page_for_login'], $lp_settings['page_for_subscription'], $lp_settings['page_for_profile'] ) ) ) {
 						
 						$post_type_id = '';
 						$restricted_post_type = '';

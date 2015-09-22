@@ -42,7 +42,8 @@ function leaky_paywall_article_countdown_nag_plugins_loaded() {
 	else
 		define( 'ACTIVE_LP_ACN', false );
 
-	if ( is_plugin_active( 'issuem-leaky-paywall/issuem-leaky-paywall.php' ) ) {
+	if ( is_plugin_active( 'issuem-leaky-paywall/issuem-leaky-paywall.php' ) 
+		|| is_plugin_active( 'leaky-paywall/leaky-paywall.php' ) ) {
 
 		require_once( 'class.php' );
 		
