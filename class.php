@@ -63,8 +63,8 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 						
 						$available_content = array();
 									
-						if ( !empty( $_COOKIE['issuem_lp' . $site] ) )
-							$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );
+						if ( !empty( $_COOKIE['lp_cookie_' . $site] ) )
+							$available_content = maybe_unserialize( stripslashes( $_COOKIE['lp_cookie_' . $site] ) );
 							
 						
 						if ( !empty( $restrictions ) ) {
@@ -156,8 +156,8 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			$available_content = array();
 			$content_remaining = 0;
 
-            if ( !empty( $_COOKIE['issuem_lp' . $site] ) )
-				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );
+            if ( !empty( $_COOKIE['lp_cookie_' . $site] ) )
+				$available_content = maybe_unserialize( stripslashes( $_COOKIE['lp_cookie_' . $site] ) );
             
             if ( !empty( $restrictions['post_types'] ) ) {
 							
@@ -228,8 +228,8 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			$available_content = array();
 			$content_remaining = 0;
 
-            if ( !empty( $_COOKIE['issuem_lp' . $site] ) )
-				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );
+            if ( !empty( $_COOKIE['lp_cookie_' . $site] ) )
+				$available_content = maybe_unserialize( stripslashes( $_COOKIE['lp_cookie_' . $site] ) );
 
 
             if ( !empty( $restrictions) ) {
