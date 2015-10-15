@@ -417,7 +417,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			if ( !empty( $_REQUEST['nag_after_countdown'] ) )
 				$settings['nag_after_countdown'] = absint( trim( $_REQUEST['nag_after_countdown'] ) );
 			else
-				$settings['allowed_ip_addresses'] = '0';
+				$settings['nag_after_countdown'] = '0';
 
 			if ( !empty( $_REQUEST['nag_theme'] ) )
 					$settings['nag_theme'] = $_REQUEST['nag_theme'];
