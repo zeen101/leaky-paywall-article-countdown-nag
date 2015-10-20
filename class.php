@@ -25,6 +25,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			$settings = $this->get_settings();
 			
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 			
 			add_action( 'wp', array( $this, 'process_requests' ), 15 );
 			
@@ -61,15 +62,17 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 						$settings = $this->get_settings();
 						$restrictions = leaky_paywall_subscriber_restrictions();
 						
+                                                if ( empty( $restrictions ) )
+                                                        $restrictions = $lp_settings['restrictions']['post_types']; //default restrictions
+
 						$available_content = array();
 									
-						if ( !empty( $_COOKIE['lp_cookie_' . $site] ) ) {
-							$available_content = maybe_unserialize( stripslashes( $_COOKIE['lp_cookie_' . $site] ) );
-						}else if( !empty( $_COOKIE['issuem_lp_' . $site] ) ) {
-							$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp_' . $site] ) );							
+						if ( !empty( $_COOKIE['lp_cookie' . $site] ) ) {
+							$available_content = maybe_unserialize( stripslashes( $_COOKIE['lp_cookie' . $site] ) );
+						}else if( !empty( $_COOKIE['issuem_lp' . $site] ) ) {
+							$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );							
 						}
-							
-						
+
 						if ( !empty( $restrictions ) ) {
 							foreach( $restrictions as $key => $restriction ) {
 
@@ -97,13 +100,11 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 							}
 						
 						}
-						
 
 						if ( $is_restricted ) {
 												        
 						    if ( $settings['nag_after_countdown'] <= $allowed_value - $content_remaining ) {
 						    								
-								add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 								if ( 0 !== $content_remaining || array_key_exists( $post->ID, $available_content[$restricted_post_type] )  ) {
 			
 									add_action( 'wp_footer', array( $this, 'wp_footer' ) );
@@ -156,13 +157,16 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 						
 			$lp_settings = $leaky_paywall->get_settings();
 			$restrictions = leaky_paywall_subscriber_restrictions();
+                        if ( empty( $restrictions ) )
+	                        $restrictions = $lp_settings['restrictions']['post_types']; //default restrictions
+
 			$available_content = array();
 			$content_remaining = 0;
 
-            if ( !empty( $_COOKIE['lp_cookie_' . $site] ) ) {
-				$available_content = maybe_unserialize( stripslashes( $_COOKIE['lp_cookie_' . $site] ) );
-			}else if( !empty( $_COOKIE['issuem_lp_' . $site] ) ) {
-				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp_' . $site] ) );							
+            if ( !empty( $_COOKIE['lp_cookie' . $site] ) ) {
+				$available_content = maybe_unserialize( stripslashes( $_COOKIE['lp_cookie' . $site] ) );
+			}else if( !empty( $_COOKIE['issuem_lp' . $site] ) ) {
+				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );							
 			}
             
             if ( !empty( $restrictions['post_types'] ) ) {
@@ -229,17 +233,17 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			$lp_settings = $leaky_paywall->get_settings();
 			$restrictions = leaky_paywall_subscriber_restrictions();
-
+                        if ( empty( $restrictions ) )
+                                $restrictions = $lp_settings['restrictions']['post_types']; //default restrictions
 			
 			$available_content = array();
 			$content_remaining = 0;
 
-            if ( !empty( $_COOKIE['lp_cookie_' . $site] ) ) {
-				$available_content = maybe_unserialize( stripslashes( $_COOKIE['lp_cookie_' . $site] ) );
-			}else if( !empty( $_COOKIE['issuem_lp_' . $site] ) ) {
-				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp_' . $site] ) );							
+            if ( !empty( $_COOKIE['lp_cookie' . $site] ) ) {
+				$available_content = maybe_unserialize( stripslashes( $_COOKIE['lp_cookie' . $site] ) );
+			}else if( !empty( $_COOKIE['issuem_lp' . $site] ) ) {
+				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );							
 			}
-
 
             if ( !empty( $restrictions) ) {
 
