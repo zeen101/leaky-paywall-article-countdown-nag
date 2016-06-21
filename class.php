@@ -52,7 +52,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 				if ( !current_user_can( 'manage_options' ) ) { //Admins can see it all
 					
 					// We don't ever want to block the login, subscription
-					if ( !is_page( array( $lp_settings['page_for_login'], $lp_settings['page_for_subscription'], $lp_settings['page_for_profile'] ) ) ) {
+					if ( !is_page( array( $lp_settings['page_for_login'], $lp_settings['page_for_subscription'], $lp_settings['page_for_profile'], $settings['page_for_register'] ) ) ) {
 						
 						$post_type_id = '';
 						$restricted_post_type = '';
