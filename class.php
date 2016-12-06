@@ -29,7 +29,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			add_action( 'wp', array( $this, 'process_requests' ), 15 );
 			
-			add_action( 'leaky_paywall_settings_form', array( $this, 'settings_div' ) );
+			add_action( 'leaky_paywall_after_general_settings', array( $this, 'settings_div' ) );
 			add_action( 'leaky_paywall_update_settings', array( $this, 'update_settings_div' ) );
 			
 		}
@@ -401,11 +401,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
                     </tr>
                     
                 </table>
-                                                                  
-                <p class="submit">
-                    <input class="button-primary" type="submit" name="update_leaky_paywall_settings" value="<?php _e( 'Save Settings', 'issuem-lp-anc' ) ?>" />
-                </p>
-
+              
                 </div>
                 
             </div>
