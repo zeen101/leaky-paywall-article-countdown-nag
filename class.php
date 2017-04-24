@@ -452,6 +452,18 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		}
 		
 		function update_settings_div() {
+
+			if(isset($_GET['tab'])) {
+				$tab = $_GET['tab'];
+			} else if ( $_GET['page'] == 'issuem-leaky-paywall' ) {
+				$tab = 'general';
+			} else {
+				$tab = '';
+			}
+
+			if ( $tab != 'general' ) {
+				return;
+			}
 		
 			// Get the user options
 			$settings = $this->get_settings();
@@ -462,7 +474,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 				$settings['nag_after_countdown'] = '0';
 
 			if ( !empty( $_REQUEST['nag_theme'] ) )
-					$settings['nag_theme'] = $_REQUEST['nag_theme'];
+					$settings['nag_theme'] = sanitize_text_field( $_REQUEST['nag_theme'] );
 			
 			$this->update_settings( $settings );
 			
