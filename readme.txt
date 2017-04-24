@@ -3,7 +3,7 @@ Contributors: layotte, peterericson
 Tags: metered, paywall, leaky, wordpress, magazine, news, blog, articles, remaining
 Requires at least: 3.0
 Tested up to: 4.5
-Stable tag: 3.2.0
+Stable tag: 3.3.0
 
 Creates an <a href="https://zeen101.com/downloads/article-countdown-nag-free/">Article Countdown Nag</a> for zeen101's Leaky Paywall WordPress plugin. More info at http://zeen101.com
 
@@ -35,6 +35,11 @@ You must have:
 * Leaky Paywall - Article Countdown Nag is GPL
 
 == Changelog ==
+= 3.3.0 =
+* Fix bug so nag obey's single post visibility settings
+* Fix bug so that settings don't reset when saved on a different tab
+* Add actions and filters in proces_requests function
+
 = 3.2.0 =
 * Adjusted settings hooks for Leaky Paywall tab settings layout
 
