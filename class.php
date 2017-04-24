@@ -39,92 +39,135 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			global $leaky_paywall, $post;
 			
 			$lp_settings = get_leaky_paywall_settings();
+
+			do_action( 'leaky_paywall_acn_before_process_requests', $lp_settings );
 			
-			if ( is_singular() ) {
-				
-				global $blog_id;
-				if ( is_multisite() ){
-					$site = '_' . $blog_id;
-				} else {
-					$site = '';
-				}
-									
-				if ( !current_user_can( 'manage_options' ) ) { //Admins can see it all
+			if ( !is_singular() ) {
+				return;
+			}
+								
+			if ( current_user_can( apply_filters( 'leaky_paywall_acn_current_user_can_view_all_content', 'manage_options' ) ) ) { //Admins can see it all
+				return;
+			}
+
+			// We don't ever want to block the login, subscription
+			if ( is_page( array( $lp_settings['page_for_login'], $lp_settings['page_for_subscription'], $lp_settings['page_for_profile'], $lp_settings['page_for_register'] ) ) ) {
+				return;
+			}
+
+			global $blog_id;
+			if ( is_multisite() ){
+				$site = '_' . $blog_id;
+			} else {
+				$site = '';
+			}
+			
+			$post_type_id = '';
+			$restricted_post_type = '';
+			$is_restricted = false;
+			$content_remaining = 0;
+			
+			$settings = $this->get_settings();
+			$restrictions = leaky_paywall_subscriber_restrictions();
+			
+            if ( empty( $restrictions ) ) {
+            	$restrictions = $lp_settings['restrictions']['post_types']; //default restrictions
+            }    
+
+			$available_content = array();
+						
+			if ( !empty( $_COOKIE['lp_cookie' . $site] ) ) {
+				$available_content = maybe_unserialize( stripslashes( $_COOKIE['lp_cookie' . $site] ) );
+			}else if( !empty( $_COOKIE['issuem_lp' . $site] ) ) {
+				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );							
+			}
+
+			if ( !empty( $restrictions ) ) {
+				foreach( $restrictions as $key => $restriction ) {
+
 					
-					// We don't ever want to block the login, subscription
-					if ( !is_page( array( $lp_settings['page_for_login'], $lp_settings['page_for_subscription'], $lp_settings['page_for_profile'], $settings['page_for_register'] ) ) ) {
-						
-						$post_type_id = '';
-						$restricted_post_type = '';
-						$is_restricted = false;
-						$content_remaining = 0;
-						
-						$settings = $this->get_settings();
-						$restrictions = leaky_paywall_subscriber_restrictions();
-						
-                                                if ( empty( $restrictions ) )
-                                                        $restrictions = $lp_settings['restrictions']['post_types']; //default restrictions
-
-						$available_content = array();
-									
-						if ( !empty( $_COOKIE['lp_cookie' . $site] ) ) {
-							$available_content = maybe_unserialize( stripslashes( $_COOKIE['lp_cookie' . $site] ) );
-						}else if( !empty( $_COOKIE['issuem_lp' . $site] ) ) {
-							$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );							
-						}
-
-						if ( !empty( $restrictions ) ) {
-							foreach( $restrictions as $key => $restriction ) {
-
-								
-								if ( is_singular( $restriction['post_type'] ) ) {
-						
-									if ( 0 <= $restriction['allowed_value'] ) {
-									
-										$post_type_id = $key;
-										$restricted_post_type = $restriction['post_type'];
-										$allowed_value = $restriction['allowed_value'];
-										$is_restricted = true;
-										
-										if ( !empty( $available_content[$restricted_post_type] ) ) {
-											$content_remaining = $allowed_value - count( $available_content[$restricted_post_type] );
-										} else {
-											$content_remaining = $allowed_value;
-										}
-										break;
-										
-									}
-									
-								}
-								
-							}
-						
-						}
-
-						if ( $is_restricted ) {
-												        
-						    if ( $settings['nag_after_countdown'] <= $allowed_value - $content_remaining ) {
-						    								
-								if ( 0 !== $content_remaining || array_key_exists( $post->ID, $available_content[$restricted_post_type] )  ) {
+					if ( is_singular( $restriction['post_type'] ) ) {
 			
-									add_action( 'wp_footer', array( $this, 'wp_footer' ) );
-								} else {
-
-									add_action( 'wp_enqueue_scripts', array( $this, 'zero_article_scripts' ) );
-									add_action( 'wp_head', array( $this, 'wp_head' ) );
-									add_filter( 'leaky_paywall_subscriber_or_login_message', array( $this, 'leaky_paywall_subscriber_or_login_message' ), 10, 3 );
-								}
-											
-							}
+						if ( 0 <= $restriction['allowed_value'] ) {
 						
+							$post_type_id = $key;
+							$restricted_post_type = $restriction['post_type'];
+							$allowed_value = $restriction['allowed_value'];
+							$is_restricted = true;
+							
+							if ( !empty( $available_content[$restricted_post_type] ) ) {
+								$content_remaining = $allowed_value - count( $available_content[$restricted_post_type] );
+							} else {
+								$content_remaining = $allowed_value;
+							}
+							break;
+							
 						}
 						
 					}
-						
+					
 				}
 			
 			}
+
+			$level_ids = leaky_paywall_subscriber_current_level_ids();
+			$visibility = get_post_meta( $post->ID, '_issuem_leaky_paywall_visibility', true );
 			
+			if ( false !== $visibility && !empty( $visibility['visibility_type'] ) && 'default' !== $visibility['visibility_type'] ) {
+										
+				switch( $visibility['visibility_type'] ) {
+					
+					// using trim() == false instead of empty() for older versions of php 
+					// see note on http://php.net/manual/en/function.empty.php
+
+					case 'only':
+						$only = array_intersect( $level_ids, $visibility['only_visible'] );
+						if ( empty( $only ) ) {
+							add_filter( 'the_content', array( $this, 'the_content_paywall' ), 999 );
+							do_action( 'leaky_paywall_is_restricted_content' );
+							return;
+						}
+						break;
+						
+					case 'always':
+						$always = array_intersect( $level_ids, $visibility['always_visible'] );
+						if ( in_array( -1, $visibility['always_visible'] ) || !empty( $always ) ) { //-1 = Everyone
+							return; //always visible, don't need process anymore
+						}
+						break;
+					
+					case 'onlyalways':
+						$onlyalways = array_intersect( $level_ids, $visibility['only_always_visible'] );
+						if ( empty( $onlyalways ) ) {
+							add_filter( 'the_content', array( $this, 'the_content_paywall' ), 999 );
+							do_action( 'leaky_paywall_is_restricted_content' );
+							return;
+						} else if ( !empty( $onlyalways ) ) {
+							return; //always visible, don't need process anymore
+						}
+						break;
+					
+					
+				}
+				
+			}
+
+			$is_restricted = apply_filters( 'leaky_paywall_acn_filter_is_restricted', $is_restricted, $restrictions, $post );
+									        
+		    if ( $settings['nag_after_countdown'] <= $allowed_value - $content_remaining ) {
+		    								
+				if ( 0 !== $content_remaining || array_key_exists( $post->ID, $available_content[$restricted_post_type] )  ) {
+
+					add_action( 'wp_footer', array( $this, 'wp_footer' ) );
+				} else {
+
+					add_action( 'wp_enqueue_scripts', array( $this, 'zero_article_scripts' ) );
+					add_action( 'wp_head', array( $this, 'wp_head' ) );
+					add_filter( 'leaky_paywall_subscriber_or_login_message', array( $this, 'leaky_paywall_subscriber_or_login_message' ), 10, 3 );
+				}
+							
+			}
+
 		}
 		
 		function frontend_scripts() {
