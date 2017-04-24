@@ -24,7 +24,6 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 					
 			$settings = $this->get_settings();
 			
-			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 			
 			add_action( 'wp', array( $this, 'process_requests' ), 15 );
@@ -466,21 +465,6 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 					$settings['nag_theme'] = $_REQUEST['nag_theme'];
 			
 			$this->update_settings( $settings );
-			
-		}
-		
-		function admin_notices() {
-			
-			$manual_update_version = get_option( 'leaky_paywall_manual_update_version' );
-			
-			if ( version_compare( $manual_update_version, '2.0.0', '<' ) ) {
-				?>
-				<div id="leaky-paywall-2-0-0-update-nag" class="update-nag">
-					<?php _e( 'You cannot use the Article Countdown Nag until you update Leaky Paywall Database to version 2.' ); ?>
-				</div>
-				<?php
-			}
-			
 			
 		}
 		
