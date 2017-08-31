@@ -20,7 +20,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		 *
 		 * @since 1.0.0
 		 */
-		function __construct() {
+		public function __construct() {
 					
 			$settings = $this->get_settings();
 			
@@ -33,7 +33,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 		}
 		
-		function process_requests() {
+		public function process_requests() {
 			
 			global $leaky_paywall, $post;
 			
@@ -157,11 +157,11 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		    								
 				if ( 0 !== $content_remaining || array_key_exists( $post->ID, $available_content[$restricted_post_type] )  ) {
 
-					add_action( 'wp_footer', array( $this, 'wp_footer' ) );
+					add_action( 'wp_footer', array( $this, 'output_countdown_nag' ) );
 				} else {
 
 					add_action( 'wp_enqueue_scripts', array( $this, 'zero_article_scripts' ) );
-					add_action( 'wp_head', array( $this, 'wp_head' ) );
+					add_action( 'wp_head', array( $this, 'output_zero_nag' ) );
 					add_filter( 'leaky_paywall_subscriber_or_login_message', array( $this, 'leaky_paywall_subscriber_or_login_message' ), 10, 3 );
 				}
 							
@@ -169,7 +169,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 
 		}
 		
-		function frontend_scripts() {
+		public function frontend_scripts() {
 
 			$settings = $this->get_settings();
 
@@ -183,11 +183,11 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 						
 		}
 		
-		function zero_article_scripts() {
+		public function zero_article_scripts() {
 				wp_enqueue_style( 'issuem-leaky-paywall-zero-articles', LP_ACN_URL . '/css/acn-zero-articles.css', '', LP_ACN_VERSION );
 		}
 		
-		function wp_head() {
+		public function output_zero_nag() {
 			
 			global $leaky_paywall, $post, $blog_id;
 			
@@ -262,9 +262,8 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 		}
 		
-		function wp_footer() {
+		public function output_countdown_nag() {
 
-			
 			global $leaky_paywall, $post, $blog_id;
 			
 			if ( is_multisite() ){
@@ -366,7 +365,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 		}
 		
-		function leaky_paywall_subscriber_or_login_message( $new_content, $message, $content ) {
+		public function leaky_paywall_subscriber_or_login_message( $new_content, $message, $content ) {
 			return $content;
 		}
 		
@@ -375,7 +374,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		 *
 		 * @since 1.0.0
 		 */
-		function get_settings() {
+		public function get_settings() {
 			
 			$defaults = array( 
 				'nag_after_countdown' => '0',
@@ -395,7 +394,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		 *
 		 * @since 1.0.0
 		 */
-		function update_settings( $settings ) {
+		public function update_settings( $settings ) {
 			
 			update_option( 'issuem-leaky-paywall-article-countdown-nag', $settings );
 			
@@ -406,7 +405,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 		 *
 		 * @since 1.0.0
 		 */
-		function settings_div() {
+		public function settings_div() {
 			
 			// Get the user options
 			$settings = $this->get_settings();
@@ -453,7 +452,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 		}
 		
-		function update_settings_div() {
+		public function update_settings_div() {
 
 			if(isset($_GET['tab'])) {
 				$tab = $_GET['tab'];
