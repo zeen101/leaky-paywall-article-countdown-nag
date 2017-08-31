@@ -76,9 +76,9 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			$available_content = array();
 						
 			if ( !empty( $_COOKIE['lp_cookie' . $site] ) ) {
-				$available_content = maybe_unserialize( stripslashes( $_COOKIE['lp_cookie' . $site] ) );
+				$available_content = json_decode( stripslashes( $_COOKIE['lp_cookie' . $site] ), true );
 			}else if( !empty( $_COOKIE['issuem_lp' . $site] ) ) {
-				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );							
+				$available_content = json_decode( stripslashes( $_COOKIE['issuem_lp' . $site] ), true );							
 			}
 
 			if ( !empty( $restrictions ) ) {
@@ -111,7 +111,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 
 			$level_ids = leaky_paywall_subscriber_current_level_ids();
 			$visibility = get_post_meta( $post->ID, '_issuem_leaky_paywall_visibility', true );
-			
+
 			if ( false !== $visibility && !empty( $visibility['visibility_type'] ) && 'default' !== $visibility['visibility_type'] ) {
 										
 				switch( $visibility['visibility_type'] ) {
@@ -275,16 +275,18 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			$lp_settings = $leaky_paywall->get_settings();
 			$restrictions = leaky_paywall_subscriber_restrictions();
-                        if ( empty( $restrictions ) )
-                                $restrictions = $lp_settings['restrictions']['post_types']; //default restrictions
+
+            if ( empty( $restrictions ) ) {
+            	$restrictions = $lp_settings['restrictions']['post_types']; //default restrictions
+            }   
 			
 			$available_content = array();
 			$content_remaining = 0;
 
             if ( !empty( $_COOKIE['lp_cookie' . $site] ) ) {
-				$available_content = maybe_unserialize( stripslashes( $_COOKIE['lp_cookie' . $site] ) );
+				$available_content = json_decode( stripslashes( $_COOKIE['lp_cookie' . $site] ), true );
 			}else if( !empty( $_COOKIE['issuem_lp' . $site] ) ) {
-				$available_content = maybe_unserialize( stripslashes( $_COOKIE['issuem_lp' . $site] ) );							
+				$available_content = json_decode( stripslashes( $_COOKIE['issuem_lp' . $site] ), true );							
 			}
 
             if ( !empty( $restrictions) ) {
