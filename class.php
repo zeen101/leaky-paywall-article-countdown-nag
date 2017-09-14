@@ -65,6 +65,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			$restricted_post_type = '';
 			$is_restricted = false;
 			$content_remaining = 0;
+			$allowed_value = 0;
 			
 			$settings = $this->get_settings();
 			$restrictions = leaky_paywall_subscriber_restrictions();
@@ -101,7 +102,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 							}
 							break;
 							
-						}
+						} 
 						
 					}
 					
