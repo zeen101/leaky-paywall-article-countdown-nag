@@ -35,6 +35,9 @@ You must have:
 * Leaky Paywall - Article Countdown Nag is GPL
 
 == Changelog ==
+= 3.4.1 =
+* Security fix by changing use of maybe_unseralize to json_decode on zero nag
+
 = 3.4.0 =
 * Security fix by changing use of maybe_unseralize to json_decode 
 
