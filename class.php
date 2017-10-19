@@ -66,31 +66,36 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			$is_restricted = false;
 			$content_remaining = 0;
 			$allowed_value = 0;
+			$available_content = array();
 			
 			$settings = $this->get_settings();
+
+			// get the restrictions of the current logged in user's level
 			$restrictions = leaky_paywall_subscriber_restrictions();
 			
             if ( empty( $restrictions ) ) {
             	$restrictions = $lp_settings['restrictions']['post_types']; //default restrictions
-            }    
+            }    			
 
-			$available_content = array();
-						
+			// find out if they have any available content, which is content they have already read before the zero nag is triggered
 			if ( !empty( $_COOKIE['lp_cookie' . $site] ) ) {
 				$available_content = json_decode( stripslashes( $_COOKIE['lp_cookie' . $site] ), true );
 			}else if( !empty( $_COOKIE['issuem_lp' . $site] ) ) {
 				$available_content = json_decode( stripslashes( $_COOKIE['issuem_lp' . $site] ), true );							
 			}
 
+			// if restrictions are set, either by the user's level or the default, then see if the content currently being viewed is restricted or not
 			if ( !empty( $restrictions ) ) {
+
 				foreach( $restrictions as $key => $restriction ) {
 
-					
 					if ( is_singular( $restriction['post_type'] ) ) {
-			
-						if ( 0 <= $restriction['allowed_value'] ) {
+
+						$post_type_id = $key;
 						
-							$post_type_id = $key;
+						// if the access is limited, see how much viewable content is remaining
+						if ( 0 <= $restriction['allowed_value'] ) {
+
 							$restricted_post_type = $restriction['post_type'];
 							$allowed_value = $restriction['allowed_value'];
 							$is_restricted = true;
@@ -113,12 +118,10 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			$level_ids = leaky_paywall_subscriber_current_level_ids();
 			$visibility = get_post_meta( $post->ID, '_issuem_leaky_paywall_visibility', true );
 
+			// if the current content has specific leaky paywall restrictions set, check those here
 			if ( false !== $visibility && !empty( $visibility['visibility_type'] ) && 'default' !== $visibility['visibility_type'] ) {
 										
 				switch( $visibility['visibility_type'] ) {
-					
-					// using trim() == false instead of empty() for older versions of php 
-					// see note on http://php.net/manual/en/function.empty.php
 
 					case 'only':
 						$only = array_intersect( $level_ids, $visibility['only_visible'] );
@@ -153,7 +156,17 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			}
 
 			$is_restricted = apply_filters( 'leaky_paywall_acn_filter_is_restricted', $is_restricted, $restrictions, $post );
-									        
+			
+			// if the current user's level access for the current content is unlimted, we don't need to show the nag
+			if( -1 == $restrictions[$post_type_id]['allowed_value'] ) {
+				return;
+			}
+
+			// content remaining cant be less than zero
+			if ( $content_remaining < 0 ) {
+				$content_remaining = 0;
+			}
+
 		    if ( $settings['nag_after_countdown'] <= $allowed_value - $content_remaining ) {
 		    								
 				if ( 0 !== $content_remaining || array_key_exists( $post->ID, $available_content[$restricted_post_type] )  ) {
@@ -314,6 +327,10 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 					
 				}
 			
+			}
+
+			if ( $content_remaining < 0 ) {
+				$content_remaining = 0;
 			}
 
 			$post_type_obj = get_post_type_object( $post->post_type );
