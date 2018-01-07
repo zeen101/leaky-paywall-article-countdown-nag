@@ -54,12 +54,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 				return;
 			}
 
-			global $blog_id;
-			if ( is_multisite() ){
-				$site = '_' . $blog_id;
-			} else {
-				$site = '';
-			}
+			$site = leaky_paywall_get_current_site();
 			
 			$post_type_id = '';
 			$restricted_post_type = '';
@@ -72,17 +67,18 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 
 			// get the restrictions of the current logged in user's level
 			$restrictions = leaky_paywall_subscriber_restrictions();
+
 			
             if ( empty( $restrictions ) ) {
             	$restrictions = $lp_settings['restrictions']['post_types']; //default restrictions
             }    			
-
 			// find out if they have any available content, which is content they have already read before the zero nag is triggered
 			if ( !empty( $_COOKIE['lp_cookie' . $site] ) ) {
 				$available_content = json_decode( stripslashes( $_COOKIE['lp_cookie' . $site] ), true );
 			}else if( !empty( $_COOKIE['issuem_lp' . $site] ) ) {
 				$available_content = json_decode( stripslashes( $_COOKIE['issuem_lp' . $site] ), true );							
 			}
+
 
 			// if restrictions are set, either by the user's level or the default, then see if the content currently being viewed is restricted or not
 			if ( !empty( $restrictions ) ) {
@@ -168,8 +164,9 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			}
 
 		    if ( $settings['nag_after_countdown'] <= $allowed_value - $content_remaining ) {
-		    								
-				if ( 0 !== $content_remaining || array_key_exists( $post->ID, $available_content[$restricted_post_type] )  ) {
+		    	if(!array_key_exists($post->ID,$available_content[$restricted_post_type])) {
+		    		return;
+		    	}else if ( 0 !== $content_remaining || array_key_exists( $post->ID, $available_content[$restricted_post_type] )  ) {
 
 					add_action( 'wp_footer', array( $this, 'output_countdown_nag' ) );
 				} else {
@@ -205,11 +202,8 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			global $leaky_paywall, $post, $blog_id;
 			
-			if ( is_multisite() ){
-				$site = '_' . $blog_id;
-			} else {
-				$site = '';
-			}
+			
+			$site = leaky_paywall_get_current_site();
 						
 			$lp_settings = $leaky_paywall->get_settings();
 			$restrictions = leaky_paywall_subscriber_restrictions();
@@ -280,11 +274,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 
 			global $leaky_paywall, $post, $blog_id;
 			
-			if ( is_multisite() ){
-				$site = '_' . $blog_id;
-			} else {
-				$site = '';
-			}
+			$site = leaky_paywall_get_current_site();
 			
 			$lp_settings = $leaky_paywall->get_settings();
 			$restrictions = leaky_paywall_subscriber_restrictions();
