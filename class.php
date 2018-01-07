@@ -163,9 +163,9 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 				$content_remaining = 0;
 			}
 
-		    if ( $settings['nag_after_countdown'] <= $allowed_value - $content_remaining ) {
-		    	if(!array_key_exists($post->ID,$available_content[$restricted_post_type])) {
-		    		return;
+		    if ( $settings['nag_after_countdown'] <= $allowed_value - $content_remaining) {
+		    	if(empty($available_content[$restricted_post_type])){
+					return;		    		
 		    	}else if ( 0 !== $content_remaining || array_key_exists( $post->ID, $available_content[$restricted_post_type] )  ) {
 
 					add_action( 'wp_footer', array( $this, 'output_countdown_nag' ) );
