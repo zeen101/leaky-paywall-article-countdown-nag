@@ -11,7 +11,7 @@ Plugin Name: Leaky Paywall - Article Countdown Nag
 Plugin URI: http://zeen101.com/
 Description: A premium leaky paywall add-on for the Leaky Paywall for WordPress plugin.
 Author: zeen101 Development Team
-Version: 3.4.1
+Version: 3.4.2
 Author URI: http://zeen101.com/
 Tags:
 */
@@ -22,7 +22,7 @@ if ( !defined( 'ZEEN101_STORE_URL' ) )
 	
 define( 'LP_ACN_NAME', 		'Leaky Paywall - Article Countdown Nag' );
 define( 'LP_ACN_SLUG', 		'issuem-leaky-paywall-article-countdown-nag' );
-define( 'LP_ACN_VERSION', 	'3.4.1' );
+define( 'LP_ACN_VERSION', 	'3.4.2' );
 define( 'LP_ACN_DB_VERSION', '1.0.0' );
 define( 'LP_ACN_URL', 		plugin_dir_url( __FILE__ ) );
 define( 'LP_ACN_PATH', 		plugin_dir_path( __FILE__ ) );
