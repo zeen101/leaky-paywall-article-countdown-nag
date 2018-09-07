@@ -424,7 +424,7 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
             
                 <div class="handlediv" title="Click to toggle"><br /></div>
                 
-                <h3 class="hndle"><span><?php _e( 'Leaky Paywall - Article Countdown Nag', 'issuem-lp-anc' ); ?></span></h3>
+                <h3 class="hndle"><span><?php _e( 'Article Countdown Nag', 'issuem-lp-anc' ); ?></span></h3>
                 
                 <div class="inside">
                 

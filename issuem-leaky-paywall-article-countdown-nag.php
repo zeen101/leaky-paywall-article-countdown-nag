@@ -18,7 +18,7 @@ Tags:
 
 //Define global variables...
 if ( !defined( 'ZEEN101_STORE_URL' ) )
-	define( 'ZEEN101_STORE_URL', 	'http://zeen101.com' );
+	define( 'ZEEN101_STORE_URL', 	'https://zeen101.com' );
 	
 define( 'LP_ACN_NAME', 		'Leaky Paywall - Article Countdown Nag' );
 define( 'LP_ACN_SLUG', 		'issuem-leaky-paywall-article-countdown-nag' );
@@ -60,6 +60,23 @@ function leaky_paywall_article_countdown_nag_plugins_loaded() {
 			load_plugin_textdomain( 'issuem-lp-acn', false, LP_ACN_REL_DIR . '/i18n/' );
 				
 		}
+
+		// Upgrade function based on EDD updater class
+		if( !class_exists( 'EDD_SL_Plugin_Updater' ) ) {
+			include( dirname( __FILE__ ) . '/include/EDD_SL_Plugin_Updater.php' );
+		} 
+
+		$license = new Leaky_Paywall_License_Key( LP_ACN_SLUG, LP_ACN_NAME );
+
+		$settings = $license->get_settings();
+		$license_key = isset($settings['license_key']) ? trim($settings['license_key']) : '';
+
+		$edd_updater = new EDD_SL_Plugin_Updater( ZEEN101_STORE_URL, __FILE__, array(
+			'version' 	=> LP_ACN_VERSION, // current version number
+			'license' 	=> $license_key,	
+			'item_name' => LP_ACN_NAME,	
+			'author' 	=> 'Zeen101 Development Team'
+		) );
 	
 	} else {
 	
@@ -68,7 +85,7 @@ function leaky_paywall_article_countdown_nag_plugins_loaded() {
 	}
 
 }
-add_action( 'plugins_loaded', 'leaky_paywall_article_countdown_nag_plugins_loaded', 4815162342 ); //wait for the plugins to be loaded before init
+add_action( 'plugins_loaded', 'leaky_paywall_article_countdown_nag_plugins_loaded', 4815162390 ); //wait for the plugins to be loaded before init
 
 function leaky_paywall_article_countdown_nag_requirement_nag() {
 	?>
