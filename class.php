@@ -171,6 +171,10 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 					add_action( 'wp_footer', array( $this, 'output_countdown_nag' ) );
 				} else {
 
+					if ( 'no' == $settings['zero_remaining_popup'] ) {
+						return;
+					}
+
 					add_action( 'wp_enqueue_scripts', array( $this, 'zero_article_scripts' ) );
 					add_action( 'wp_head', array( $this, 'output_zero_nag' ) );
 					add_filter( 'leaky_paywall_subscriber_or_login_message', array( $this, 'leaky_paywall_subscriber_or_login_message' ), 10, 3 );
@@ -386,7 +390,8 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			
 			$defaults = array( 
 				'nag_after_countdown' => '0',
-				'nag_theme' => 'default'
+				'nag_theme' => 'default',
+				'zero_remaining_popup' => 'yes'
 			);
 		
 			$defaults = apply_filters( 'leaky_paywall_article_countdown_nag_default_settings', $defaults );
@@ -431,10 +436,10 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
                 <table id="leaky_paywall_article_countdown_nag" class="form-table">
                 
                     <tr>
-                        <th><?php _e( 'Nag After Reading?', 'issuem-lp-anc' ); ?></th>
+                        <th><?php _e( 'Show Nag After Reading', 'issuem-lp-anc' ); ?></th>
                         <td>
-                        <input type="text" value="<?php echo $settings['nag_after_countdown']; ?>" name="nag_after_countdown" /> <?php _e( 'articles', 'issuem-lp-anc' ); ?>
-                        <p class="description"><?php _e( 'This will show the article countdown nag popup after the user has read the given number of articles.' ); ?></p>
+                        <input class="small-text" type="number" value="<?php echo $settings['nag_after_countdown']; ?>" name="nag_after_countdown" /> <?php _e( 'restricted content items', 'issuem-lp-anc' ); ?>
+                        <p class="description"><?php _e( 'Display the article countdown nag popup after the user has read the given number of restricted content items. <br>Set to 0 to show the nag the first time restricted content is viewed.' ); ?></p>
                         </td>
                     </tr>
 
@@ -448,6 +453,17 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 	                        </select>
 
                         <p class="description"><?php _e( 'Choose theme for article countdown nag popup.' ); ?></p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th><?php _e( 'Zero Remaining Popup', 'issuem-lp-anc' ); ?></th>
+                        <td>
+                       		<select id="zero_remaining_popup" name="zero_remaining_popup">
+	                             <option value="yes" <?php selected( 'yes' === $settings['zero_remaining_popup'] ); ?>><?php _e( 'Yes', 'issuem-lp-anc' ); ?></option>
+	                             <option value="no" <?php selected( 'no' === $settings['zero_remaining_popup'] ); ?>><?php _e( 'No', 'issuem-lp-anc' ); ?></option>
+	                        </select>
+                        	<p class="description"><?php _e( 'Display the zero remaining popup over the top of the page when the content limit is reached. If set to "No", the user will instead see the default Leaky Paywall subscribe nag in the content.' ); ?></p>
                         </td>
                     </tr>
                     
@@ -484,6 +500,10 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 
 			if ( !empty( $_REQUEST['nag_theme'] ) )
 					$settings['nag_theme'] = sanitize_text_field( $_REQUEST['nag_theme'] );
+
+			if ( isset( $_POST['zero_remaining_popup'] ) ) {
+				$settings['zero_remaining_popup'] = sanitize_text_field( $_POST['zero_remaining_popup'] );
+			}
 			
 			$this->update_settings( $settings );
 			
