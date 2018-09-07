@@ -27,12 +27,12 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 			
 			add_action( 'wp', array( $this, 'process_requests' ), 15 );
-			
+
 			add_action( 'leaky_paywall_after_general_settings', array( $this, 'settings_div' ) );
 			add_action( 'leaky_paywall_update_settings', array( $this, 'update_settings_div' ) );
 			
 		}
-		
+
 		public function process_requests() {
 			
 			global $leaky_paywall, $post;
@@ -493,13 +493,15 @@ if ( ! class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
 			// Get the user options
 			$settings = $this->get_settings();
 				
-			if ( !empty( $_REQUEST['nag_after_countdown'] ) )
-				$settings['nag_after_countdown'] = absint( trim( $_REQUEST['nag_after_countdown'] ) );
-			else
+			if ( !empty( $_POST['nag_after_countdown'] ) ) {
+				$settings['nag_after_countdown'] = absint( trim( $_POST['nag_after_countdown'] ) );
+			} else {
 				$settings['nag_after_countdown'] = '0';
+			}
 
-			if ( !empty( $_REQUEST['nag_theme'] ) )
-					$settings['nag_theme'] = sanitize_text_field( $_REQUEST['nag_theme'] );
+			if ( isset( $_POST['nag_theme'] ) ) {
+				$settings['nag_theme'] = sanitize_text_field( $_POST['nag_theme'] );
+			}
 
 			if ( isset( $_POST['zero_remaining_popup'] ) ) {
 				$settings['zero_remaining_popup'] = sanitize_text_field( $_POST['zero_remaining_popup'] );
