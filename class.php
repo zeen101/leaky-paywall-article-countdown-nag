@@ -35,17 +35,27 @@ class Leaky_Paywall_Article_Countdown_Nag {
 		
 	}
 
+	/**
+	 * Determine whether to show the countdown nag
+	 *
+	 * @since 4.10.3
+	 *
+	 * @param boolean $has_subscriber_paid
+	 */
 	public function maybe_display_countdown() 
 	{
-
 
 		$post_id = $_REQUEST['post_id'];
 		$post_obj = get_post( $post_id );
 		$current_post_type = $post_obj->post_type;
+		$post_type_obj = get_post_type_object( $current_post_type );
+		$content_remaining = 0;
+		$allowed_value = 0;
 		
 		$lp_restrictions = new Leaky_Paywall_Restrictions();
 		$restrictions = $lp_restrictions->get_subscriber_restrictions();
 
+		$settings = $this->get_settings();
 		$lp_settings = get_leaky_paywall_settings();
 		$login_url = get_page_link( $lp_settings['page_for_login'] );
 		$subscription_url = get_page_link( $lp_settings['page_for_subscription'] );
@@ -56,7 +66,7 @@ class Leaky_Paywall_Article_Countdown_Nag {
 			exit();
 		}
 
-		if ( $lp_restrictions->is_unblockable_content() ) {
+		if ( $this->is_unblockable_content( $post_id ) ) {
 			echo '';
 			exit();
 		}
@@ -65,8 +75,6 @@ class Leaky_Paywall_Article_Countdown_Nag {
 			echo '';
 			exit();
 		}
-
-
 
 		if ( $lp_restrictions->visibility_is_restricted( $post_obj ) ) {
 
@@ -85,11 +93,16 @@ class Leaky_Paywall_Article_Countdown_Nag {
 			<?php 
 			$content = ob_get_contents();
 			ob_end_clean();
-			echo $content; 
+
+			if ( 'no' == $settings['zero_remaining_popup'] ) {
+				echo '';
+			} else {
+				echo $content; 
+			}
+			
 			exit();
 		}
 
-		die('right here');
 
 		// at this point we need to test against the global restriction settings
 
@@ -107,8 +120,10 @@ class Leaky_Paywall_Article_Countdown_Nag {
 					if ( 0 <= $restriction['allowed_value'] ) {
 
 						$post_type_id = $key;
+						$allowed_value = $restriction['allowed_value'];
 						$restricted_post_type = $restriction['post_type'];
 						$is_restricted = true;
+
 						break;
 
 					}
@@ -119,35 +134,61 @@ class Leaky_Paywall_Article_Countdown_Nag {
 
 		}
 
-		$is_restricted = apply_filters( 'leaky_paywall_filter_is_restricted', $is_restricted, $restrictions, $post );
+		$is_restricted = apply_filters( 'leaky_paywall_filter_is_restricted', $is_restricted, $restrictions, $post_obj );
 
 		if ( !$is_restricted ) {
 			echo '';
 			exit();
 		}
 
+
 		// content that can be accessed because the user has viewed it already
-		$available_content = $lp_restrictions->get_available_content($restricted_post_type);
+		$available_content = $lp_restrictions->get_available_content( $restricted_post_type );
+
+		if ( !empty( $available_content[$restricted_post_type] ) ) {
+			$content_remaining = $allowed_value - count( $available_content[$restricted_post_type] );
+		} else {
+			$content_remaining = $allowed_value;
+		}
 
 		if ( $lp_restrictions->combined_restrictions_enabled() ) {
 
-			// maybe update available content array
-			$available_content = $this->update_available_content_combined( $restrictions, $available_content, $post_type_id, $restricted_post_type, $post_id );
+			if ( $lp_restrictions->is_restricted_combined( $restrictions, $available_content, $post_type_id, $restricted_post_type, $post_id ) ) {
+				
+				$remaining_text = ( 1 === $content_remaining ) 
+	        		?  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->singular_name )
+	        		:  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->name );
 
-			if ( $this->is_restricted_combined( $restrictions, $available_content, $post_type_id, $restricted_post_type, $post_id ) ) {
-				// get content remaining
-				echo 'show countdown';
+				ob_start(); 
+				?>
+				<div class="acn-zero-remaining-overlay"></div>
+				<div id="issuem-leaky-paywall-articles-zero-remaining-nag">
+					<div id="issuem-leaky-paywall-articles-remaining-close">&nbsp;</div>
+					<div id="issuem-leaky-paywall-articles-remaining">
+						<div id="issuem-leaky-paywall-articles-remaining-count">0</div>
+						<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
+					</div>
+					<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $subscription_url; ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
+					<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo $login_url; ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
+				</div>
+				<?php 
+				$content = ob_get_contents();
+				ob_end_clean();
+				
+				if ( 'no' == $settings['zero_remaining_popup'] ) {
+					echo '';
+				} else {
+					echo $content; 
+				}
+
 				exit();
-			}
 
-		} else {
+			} else {
 
-			$available_content = $this->update_available_content_default( $restrictions, $available_content, $post_type_id, $restricted_post_type, $post_id );
-		
-			if ( $this->is_restricted_default( $restrictions, $available_content, $post_type_id, $restricted_post_type, $post_id ) ) {
-				// get content remaining
-				$content_remaining = '6';
-				$remaining_text = 'Content Remaining';
+				$remaining_text = ( 1 === $content_remaining ) 
+	        		?  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->singular_name )
+	        		:  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->name );
+
 			    ob_start(); ?>
 			    
 			    	<div id="issuem-leaky-paywall-articles-remaining-nag">
@@ -169,11 +210,89 @@ class Leaky_Paywall_Article_Countdown_Nag {
 				exit();
 			}
 
+		} else {
+			
+			
+			if ( $lp_restrictions->is_restricted_default( $restrictions, $available_content, $post_type_id, $restricted_post_type, $post_id ) ) {
+
+				$remaining_text = ( 1 === $content_remaining ) 
+	        		?  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->singular_name )
+	        		:  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->name );
+
+				ob_start(); 
+				?>
+				<div class="acn-zero-remaining-overlay"></div>
+				<div id="issuem-leaky-paywall-articles-zero-remaining-nag">
+					<div id="issuem-leaky-paywall-articles-remaining-close">&nbsp;</div>
+					<div id="issuem-leaky-paywall-articles-remaining">
+						<div id="issuem-leaky-paywall-articles-remaining-count">0</div>
+						<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
+					</div>
+					<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $subscription_url; ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
+					<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo $login_url; ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
+				</div>
+				<?php 
+				$content = ob_get_contents();
+				ob_end_clean();
+
+				if ( 'no' == $settings['zero_remaining_popup'] ) {
+					echo '';
+				} else {
+					echo $content; 
+				}
+
+				exit();
+				
+			} else {
+
+				$remaining_text = ( 1 === $content_remaining ) 
+	        		?  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->singular_name )
+	        		:  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->name );
+				
+			    ob_start(); ?>
+			    
+			    	<div id="issuem-leaky-paywall-articles-remaining-nag">
+						<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
+						<div id="issuem-leaky-paywall-articles-remaining">
+							<div id="issuem-leaky-paywall-articles-remaining-count"><?php echo $content_remaining; ?></div>
+							<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
+
+						</div>
+						<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo esc_js( $subscription_url ); ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
+						<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo esc_js( $login_url ); ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
+					</div>
+			    	
+			    
+			    <?php  
+			    $content = ob_get_contents();
+				ob_end_clean();
+				echo $content; 
+				exit();
+			}
+
 		}
 	    
-		echo 'here';
+		echo 'the end';
 		exit();
 
+	}
+
+	public function is_unblockable_content( $post_id ) 
+	{
+		$settings = get_leaky_paywall_settings();
+
+		$unblockable_content = array(
+			$settings['page_for_login'],
+			$settings['page_for_subscription'],
+			$settings['page_for_profile'],
+			$settings['page_for_register']
+		);
+
+		if ( in_array( $post_id, $unblockable_content ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 
