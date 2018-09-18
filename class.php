@@ -38,9 +38,8 @@ class Leaky_Paywall_Article_Countdown_Nag {
 	/**
 	 * Determine whether to show the countdown nag
 	 *
-	 * @since 4.10.3
+	 * @since 3.4.3
 	 *
-	 * @param boolean $has_subscriber_paid
 	 */
 	public function maybe_display_countdown() 
 	{
@@ -60,6 +59,8 @@ class Leaky_Paywall_Article_Countdown_Nag {
 		$login_url = get_page_link( $lp_settings['page_for_login'] );
 		$subscription_url = get_page_link( $lp_settings['page_for_subscription'] );
 
+		do_action( 'leaky_paywall_acn_before_process_requests', $lp_settings );
+		
 		// allow admins to view all content
 		if ( current_user_can( apply_filters( 'leaky_paywall_current_user_can_view_all_content', 'manage_options' ) ) ) {
 			echo '';
@@ -151,6 +152,15 @@ class Leaky_Paywall_Article_Countdown_Nag {
 			$content_remaining = $allowed_value;
 		}
 
+		if ( $content_remaining < 0 ) {
+			$content_remaining = 0;
+		}
+
+	    if ( $settings['nag_after_countdown'] > $allowed_value - $content_remaining) {
+	    	echo '';
+	    	exit();
+	    }
+
 		if ( $lp_restrictions->combined_restrictions_enabled() ) {
 
 			if ( $lp_restrictions->is_restricted_combined( $restrictions, $available_content, $post_type_id, $restricted_post_type, $post_id ) ) {
@@ -189,8 +199,32 @@ class Leaky_Paywall_Article_Countdown_Nag {
 	        		?  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->singular_name )
 	        		:  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->name );
 
-			    ob_start(); ?>
-			    
+			    ob_start(); 
+
+			    if ( $settings['nag_theme'] == 'slim' ) {
+			    	?>
+			    	<div id="issuem-leaky-paywall-articles-remaining-nag">
+			    		<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
+			    		<div id="issuem-leaky-paywall-articles-remaining-count">
+			    			<p><?php echo $content_remaining; ?></p>
+			    		</div>
+
+				    	<div id="issuem-leaky-paywall-articles-remaining">
+				    		
+				    		<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
+
+				    		<p>
+				    			<span id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $subscription_url; ?>"><?php _e( 'Subscribe', 'issuem-lp-anc' ); ?></a></span> 
+				    			| 
+				    			<span id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo $login_url; ?>"><?php _e( 'Login', 'issuem-lp-anc' ); ?></a></span>
+				    		</p>
+
+			    		</div>
+			    	</div>
+			    	<?php 
+			    } else {
+			    	?>
+
 			    	<div id="issuem-leaky-paywall-articles-remaining-nag">
 						<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
 						<div id="issuem-leaky-paywall-articles-remaining">
@@ -201,9 +235,10 @@ class Leaky_Paywall_Article_Countdown_Nag {
 						<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo esc_js( $subscription_url ); ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
 						<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo esc_js( $login_url ); ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
 					</div>
-			    	
-			    
-			    <?php  $content = ob_get_contents();
+			    	<?php 
+			    }
+			  	
+			  	$content = ob_get_contents();
 				ob_end_clean();
 
 				echo $content; 
@@ -249,8 +284,32 @@ class Leaky_Paywall_Article_Countdown_Nag {
 	        		?  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->singular_name )
 	        		:  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->name );
 				
-			    ob_start(); ?>
-			    
+			    ob_start(); 
+
+			   	if ( $settings['nag_theme'] == 'slim' ) {
+			    	?>
+			    	<div id="issuem-leaky-paywall-articles-remaining-nag">
+			    		<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
+			    		<div id="issuem-leaky-paywall-articles-remaining-count">
+			    			<p><?php echo $content_remaining; ?></p>
+			    		</div>
+
+				    	<div id="issuem-leaky-paywall-articles-remaining">
+				    		
+				    		<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
+
+				    		<p>
+				    			<span id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $subscription_url; ?>"><?php _e( 'Subscribe', 'issuem-lp-anc' ); ?></a></span> 
+				    			| 
+				    			<span id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo $login_url; ?>"><?php _e( 'Login', 'issuem-lp-anc' ); ?></a></span>
+				    		</p>
+
+			    		</div>
+			    	</div>
+			    	<?php 
+			    } else {
+			    	?>
+
 			    	<div id="issuem-leaky-paywall-articles-remaining-nag">
 						<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
 						<div id="issuem-leaky-paywall-articles-remaining">
@@ -261,9 +320,9 @@ class Leaky_Paywall_Article_Countdown_Nag {
 						<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo esc_js( $subscription_url ); ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
 						<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo esc_js( $login_url ); ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
 					</div>
-			    	
-			    
-			    <?php  
+			    	<?php 
+			    }
+			  	
 			    $content = ob_get_contents();
 				ob_end_clean();
 				echo $content; 
@@ -272,7 +331,7 @@ class Leaky_Paywall_Article_Countdown_Nag {
 
 		}
 	    
-		echo 'the end';
+		echo 'end';
 		exit();
 
 	}
@@ -468,10 +527,6 @@ class Leaky_Paywall_Article_Countdown_Nag {
 			wp_enqueue_style( 'leaky-paywall-article-countdown-nag', LP_ACN_URL . 'css/article-countdown-nag.css', '', LP_ACN_VERSION );
 		}
 					
-	}
-	
-	public function zero_article_scripts() {
-			wp_enqueue_style( 'issuem-leaky-paywall-zero-articles', LP_ACN_URL . '/css/acn-zero-articles.css', '', LP_ACN_VERSION );
 	}
 	
 	public function output_zero_nag() {
