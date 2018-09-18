@@ -8,11 +8,11 @@
  
 /*
 Plugin Name: Leaky Paywall - Article Countdown Nag
-Plugin URI: http://zeen101.com/
-Description: A premium leaky paywall add-on for the Leaky Paywall for WordPress plugin.
-Author: zeen101 Development Team
+Plugin URI: https://zeen101.com/
+Description: Display an article countdown nag to users encouraging them to subscribe. 
+Author: ZEEN101
 Version: 3.4.2
-Author URI: http://zeen101.com/
+Author URI: https://zeen101.com/
 Tags:
 */
 
