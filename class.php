@@ -25,12 +25,157 @@ class Leaky_Paywall_Article_Countdown_Nag {
 		
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 		
-		add_action( 'wp', array( $this, 'process_requests' ), 15 );
+		// add_action( 'wp', array( $this, 'process_requests' ), 15 );
 
 		add_action( 'leaky_paywall_after_general_settings', array( $this, 'settings_div' ) );
 		add_action( 'leaky_paywall_update_settings', array( $this, 'update_settings_div' ) );
+
+		add_action( 'wp_ajax_nopriv_maybe_display_countdown', array( $this, 'maybe_display_countdown' ) );
+		add_action( 'wp_ajax_maybe_display_countdown', array( $this, 'maybe_display_countdown' ) );
 		
 	}
+
+	public function maybe_display_countdown() 
+	{
+
+
+		$post_id = $_REQUEST['post_id'];
+		$post_obj = get_post( $post_id );
+		$current_post_type = $post_obj->post_type;
+		
+		$lp_restrictions = new Leaky_Paywall_Restrictions();
+		$restrictions = $lp_restrictions->get_subscriber_restrictions();
+
+		$lp_settings = get_leaky_paywall_settings();
+		$login_url = get_page_link( $lp_settings['page_for_login'] );
+		$subscription_url = get_page_link( $lp_settings['page_for_subscription'] );
+
+		// allow admins to view all content
+		if ( current_user_can( apply_filters( 'leaky_paywall_current_user_can_view_all_content', 'manage_options' ) ) ) {
+			echo '';
+			exit();
+		}
+
+		if ( $lp_restrictions->is_unblockable_content() ) {
+			echo '';
+			exit();
+		}
+
+		if ( $lp_restrictions->visibility_allows_access( $post_obj ) ) {
+			echo '';
+			exit();
+		}
+
+
+
+		if ( $lp_restrictions->visibility_is_restricted( $post_obj ) ) {
+
+			ob_start(); 
+			?>
+			<div class="acn-zero-remaining-overlay"></div>
+			<div id="issuem-leaky-paywall-articles-zero-remaining-nag">
+				<div id="issuem-leaky-paywall-articles-remaining-close">&nbsp;</div>
+				<div id="issuem-leaky-paywall-articles-remaining">
+					<div id="issuem-leaky-paywall-articles-remaining-count">0</div>
+					<div id="issuem-leaky-paywall-articles-remaining-text">This content is restricted.</div>
+				</div>
+				<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo $subscription_url; ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
+				<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo $login_url; ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
+			</div>
+			<?php 
+			$content = ob_get_contents();
+			ob_end_clean();
+			echo $content; 
+			exit();
+		}
+
+		die('right here');
+
+		// at this point we need to test against the global restriction settings
+
+		$post_type_id = '';
+		$restricted_post_type = '';
+		$is_restricted = false;
+
+		if ( !empty( $restrictions ) ) {
+
+			foreach( $restrictions as $key => $restriction ) {
+
+				if ( $restriction['post_type'] == $current_post_type ) {
+
+					// this will only be ignored if the allowed value is unlimited ( -1 )
+					if ( 0 <= $restriction['allowed_value'] ) {
+
+						$post_type_id = $key;
+						$restricted_post_type = $restriction['post_type'];
+						$is_restricted = true;
+						break;
+
+					}
+
+				}
+
+			}
+
+		}
+
+		$is_restricted = apply_filters( 'leaky_paywall_filter_is_restricted', $is_restricted, $restrictions, $post );
+
+		if ( !$is_restricted ) {
+			echo '';
+			exit();
+		}
+
+		// content that can be accessed because the user has viewed it already
+		$available_content = $lp_restrictions->get_available_content($restricted_post_type);
+
+		if ( $lp_restrictions->combined_restrictions_enabled() ) {
+
+			// maybe update available content array
+			$available_content = $this->update_available_content_combined( $restrictions, $available_content, $post_type_id, $restricted_post_type, $post_id );
+
+			if ( $this->is_restricted_combined( $restrictions, $available_content, $post_type_id, $restricted_post_type, $post_id ) ) {
+				// get content remaining
+				echo 'show countdown';
+				exit();
+			}
+
+		} else {
+
+			$available_content = $this->update_available_content_default( $restrictions, $available_content, $post_type_id, $restricted_post_type, $post_id );
+		
+			if ( $this->is_restricted_default( $restrictions, $available_content, $post_type_id, $restricted_post_type, $post_id ) ) {
+				// get content remaining
+				$content_remaining = '6';
+				$remaining_text = 'Content Remaining';
+			    ob_start(); ?>
+			    
+			    	<div id="issuem-leaky-paywall-articles-remaining-nag">
+						<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
+						<div id="issuem-leaky-paywall-articles-remaining">
+							<div id="issuem-leaky-paywall-articles-remaining-count"><?php echo $content_remaining; ?></div>
+							<div id="issuem-leaky-paywall-articles-remaining-text"><?php echo $remaining_text; ?></div>
+
+						</div>
+						<div id="issuem-leaky-paywall-articles-remaining-subscribe-link"><a href="<?php echo esc_js( $subscription_url ); ?>"><?php _e( 'Subscribe today for full access', 'issuem-lp-anc' ); ?></a></div>
+						<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo esc_js( $login_url ); ?>"><?php _e( 'Current subscriber? Login here', 'issuem-lp-anc' ); ?></a></div>
+					</div>
+			    	
+			    
+			    <?php  $content = ob_get_contents();
+				ob_end_clean();
+
+				echo $content; 
+				exit();
+			}
+
+		}
+	    
+		echo 'here';
+		exit();
+
+	}
+
 
 	public function process_requests() {
 		
@@ -187,12 +332,21 @@ class Leaky_Paywall_Article_Countdown_Nag {
 
 		$settings = $this->get_settings();
 
-		wp_enqueue_script( 'issuem-leaky-paywall-article-countdown-nag', LP_ACN_URL . '/js/article-countdown-nag.js', array( 'jquery' ), LP_ACN_VERSION );
+		wp_enqueue_script( 'leaky-paywall-article-countdown-nag', LP_ACN_URL . 'js/article-countdown-nag.js', array( 'jquery' ), LP_ACN_VERSION );
+
+		$protocol = isset( $_SERVER['HTTPS'] ) ? 'https://' : 'http://';
+
+		$params = array(
+			'ajaxurl' => admin_url( 'admin-ajax.php', $protocol )
+		);
+
+		wp_localize_script( 'leaky-paywall-article-countdown-nag', 'lp_acn', $params );
+
 
 		if ( $settings['nag_theme'] == 'slim' ) {
-			wp_enqueue_style( 'issuem-leaky-paywall-article-countdown-nag', LP_ACN_URL . '/css/article-countdown-nag-slim.css', '', LP_ACN_VERSION );
+			wp_enqueue_style( 'leaky-paywall-article-countdown-nag', LP_ACN_URL . 'css/article-countdown-nag-slim.css', '', LP_ACN_VERSION );
 		} else {
-			wp_enqueue_style( 'issuem-leaky-paywall-article-countdown-nag', LP_ACN_URL . '/css/article-countdown-nag.css', '', LP_ACN_VERSION );
+			wp_enqueue_style( 'leaky-paywall-article-countdown-nag', LP_ACN_URL . 'css/article-countdown-nag.css', '', LP_ACN_VERSION );
 		}
 					
 	}
