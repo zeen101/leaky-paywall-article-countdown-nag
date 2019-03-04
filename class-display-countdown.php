@@ -32,6 +32,8 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 		$this->post_id = absint( $_GET['post_id'] );
 		$this->lp_restriction = new Leaky_Paywall_Restrictions( $this->post_id );
 		$this->lp_restriction->is_ajax = true;
+
+		do_action( 'leaky_paywall_acn_before_process_requests', $this->post_id );
 		
 		// if content is not restricted, show nothing
 		if ( ! $this->lp_restriction->is_content_restricted() ) {
