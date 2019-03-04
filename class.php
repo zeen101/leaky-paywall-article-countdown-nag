@@ -30,9 +30,31 @@ class Leaky_Paywall_Article_Countdown_Nag {
 		add_action( 'leaky_paywall_after_general_settings', array( $this, 'settings_div' ) );
 		add_action( 'leaky_paywall_update_settings', array( $this, 'update_settings_div' ) );
 
-		add_action( 'wp_ajax_nopriv_maybe_display_countdown', array( $this, 'maybe_display_countdown' ) );
-		add_action( 'wp_ajax_maybe_display_countdown', array( $this, 'maybe_display_countdown' ) );
+		// add_action( 'wp_ajax_nopriv_maybe_display_countdown', array( $this, 'maybe_display_countdown' ) );
+		// add_action( 'wp_ajax_maybe_display_countdown', array( $this, 'maybe_display_countdown' ) );
 		
+	}
+
+	public function frontend_scripts() {
+
+		$settings = $this->get_settings();
+
+		wp_enqueue_script( 'leaky-paywall-article-countdown-nag', LP_ACN_URL . 'js/article-countdown-nag.js', array( 'jquery' ), LP_ACN_VERSION );
+
+		$protocol = isset( $_SERVER['HTTPS'] ) ? 'https://' : 'http://';
+
+		$params = array(
+			'ajaxurl' => admin_url( 'admin-ajax.php', $protocol )
+		);
+
+		wp_localize_script( 'leaky-paywall-article-countdown-nag', 'lp_acn', $params );
+
+		if ( $settings['nag_theme'] == 'slim' ) {
+			wp_enqueue_style( 'leaky-paywall-article-countdown-nag', LP_ACN_URL . 'css/article-countdown-nag-slim.css', '', LP_ACN_VERSION );
+		} else {
+			wp_enqueue_style( 'leaky-paywall-article-countdown-nag', LP_ACN_URL . 'css/article-countdown-nag.css', '', LP_ACN_VERSION );
+		}
+					
 	}
 
 	/**
@@ -504,29 +526,6 @@ class Leaky_Paywall_Article_Countdown_Nag {
 						
 		}
 
-	}
-	
-	public function frontend_scripts() {
-
-		$settings = $this->get_settings();
-
-		wp_enqueue_script( 'leaky-paywall-article-countdown-nag', LP_ACN_URL . 'js/article-countdown-nag.js', array( 'jquery' ), LP_ACN_VERSION );
-
-		$protocol = isset( $_SERVER['HTTPS'] ) ? 'https://' : 'http://';
-
-		$params = array(
-			'ajaxurl' => admin_url( 'admin-ajax.php', $protocol )
-		);
-
-		wp_localize_script( 'leaky-paywall-article-countdown-nag', 'lp_acn', $params );
-
-
-		if ( $settings['nag_theme'] == 'slim' ) {
-			wp_enqueue_style( 'leaky-paywall-article-countdown-nag', LP_ACN_URL . 'css/article-countdown-nag-slim.css', '', LP_ACN_VERSION );
-		} else {
-			wp_enqueue_style( 'leaky-paywall-article-countdown-nag', LP_ACN_URL . 'css/article-countdown-nag.css', '', LP_ACN_VERSION );
-		}
-					
 	}
 	
 	public function output_zero_nag() {

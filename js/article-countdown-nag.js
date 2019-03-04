@@ -19,7 +19,7 @@ $leaky_paywall_article_countdown_nag(document).ready(function($) {
                 if ( post_id > 0 ) {
 
                     var data = {
-                        action: 'maybe_display_countdown',
+                        action: 'process_countdown_display',
                         post_id: post_id
                     };
 
@@ -46,7 +46,7 @@ $leaky_paywall_article_countdown_nag(document).ready(function($) {
                 if ( page_id > 0 ) {
 
                     var data = {
-                        action: 'maybe_display_countdown',
+                        action: 'process_countdown_display',
                         post_id: page_id
                     };
 

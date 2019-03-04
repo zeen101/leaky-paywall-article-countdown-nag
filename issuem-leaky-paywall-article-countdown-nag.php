@@ -46,6 +46,7 @@ function leaky_paywall_article_countdown_nag_plugins_loaded() {
 		|| is_plugin_active( 'leaky-paywall/leaky-paywall.php' ) ) {
 
 		require_once( 'class.php' );
+		require_once( 'class-display-countdown.php' );
 		
 		// Instantiate the Pigeon Pack class
 		if ( class_exists( 'Leaky_Paywall_Article_Countdown_Nag' ) ) {
