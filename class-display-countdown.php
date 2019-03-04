@@ -159,7 +159,7 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
     		?  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->singular_name )
     		:  sprintf( __( '%s Remaining', 'issuem-lp-anc' ), $post_type_obj->labels->name );
 
-    	return $remaining_text;
+    	return apply_filters( 'leaky_paywall_acn_countdown_remaining_text', $remaining_text, $this->post_id );
 
 	}
 
