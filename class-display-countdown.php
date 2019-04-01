@@ -43,7 +43,20 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 		if ( ! $this->lp_restriction->current_user_can_access() ) {
 			$this->display_zero_screen();
 		} else {
-			$this->display_countdown();
+
+			$current_user = wp_get_current_user();
+
+			// if the user is logged and has access, don't show the nag
+			if ( $current_user->ID > 0 ) {
+
+				if ( !leaky_paywall_user_has_access( $current_user ) ) {
+					$this->display_countdown();
+				}
+				
+			} else {
+				$this->display_countdown();
+			}
+			
 		}
 
 		die();
