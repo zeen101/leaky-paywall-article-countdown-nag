@@ -181,6 +181,7 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 		$number_allowed = 0;
 		$restrictions = $this->lp_restriction->get_restriction_settings();
 		$post_obj = get_post( $this->post_id );
+		$settings = get_leaky_paywall_settings();
 
 		foreach( $restrictions as $restriction ) {
 			
@@ -189,6 +190,10 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 				break;
 			}
 			
+		}
+
+		if ( 'on' == $settings['enable_combined_restrictions'] ) {
+			$number_allowed = $settings['combined_restrictions_total_allowed'];
 		}
 
 		return $number_allowed;
