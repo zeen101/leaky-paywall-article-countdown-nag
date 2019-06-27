@@ -29,6 +29,10 @@ class Leaky_Paywall_Article_Countdown_Nag {
 
 	public function frontend_scripts() {
 
+		if ( is_home() || is_front_page() || is_archive() ) {
+			return;
+		}
+
 		$settings = $this->get_settings();
 
 		wp_enqueue_script( 'leaky-paywall-article-countdown-nag', LP_ACN_URL . 'js/article-countdown-nag.js', array( 'jquery' ), LP_ACN_VERSION );
