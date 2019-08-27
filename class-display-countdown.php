@@ -88,6 +88,14 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 	public function get_countdown_html() 
 	{
 
+		echo '<pre>allowed: ';
+		print_r( $this->number_allowed );
+		echo '</pre>';
+
+		echo '<pre>viewed: ';
+		print_r( $this->number_viewed );
+		echo '</pre>';
+
 		$settings = get_lp_acn_settings();
 		$this->content_remaining = $this->number_allowed - $this->number_viewed;
 		$lp_settings = get_leaky_paywall_settings();
@@ -183,13 +191,19 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 		$post_obj = get_post( $this->post_id );
 		$settings = get_leaky_paywall_settings();
 
-		foreach( $restrictions as $restriction ) {
-			
-			if ( $restriction[0]['post_type'] == $post_obj->post_type ) {
-				$number_allowed = $restriction[0]['allowed_value'];
+		foreach( $restrictions['post_types'] as $restriction ) {
+
+			if ( $restriction['post_type'] == $post_obj->post_type && $restriction['taxonomy'] && $this->lp_restriction->content_taxonomy_matches( $restriction['taxonomy'] ) ) {
+
+				$number_allowed = $restriction['allowed_value'];	
 				break;
+
+			} else if ( $restriction['post_type'] == $post_obj->post_type ) {
+
+				$number_allowed = $restriction['allowed_value'];	
+				
 			}
-			
+
 		}
 
 		if ( 'on' == $settings['enable_combined_restrictions'] ) {
@@ -206,10 +220,23 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 		$post_obj = get_post( $this->post_id );
 		$viewed_data = $this->lp_restriction->get_content_viewed_by_user();
 
-		foreach( $viewed_data as $key => $items ) {
+		$restrictions = $this->lp_restriction->get_restriction_settings();
 
-			if ( $key == $post_obj->post_type ) {
-				$number_viewed = count( $items );
+		foreach( $restrictions['post_types'] as $restriction ) {
+
+			foreach( $viewed_data as $key => $items ) {
+
+				if ( $key == $post_obj->post_type && $restriction['post_type'] == $post_obj->post_type && $restriction['taxonomy'] && $this->lp_restriction->content_taxonomy_matches( $restriction['taxonomy'] ) ) {
+
+					$number_viewed = $this->lp_restriction->get_number_viewed_by_term(  $restriction['taxonomy'] );
+					break; 
+					
+				} else if ( $restriction['post_type'] == $post_obj->post_type && $key == $post_obj->post_type ) {
+
+					$number_viewed = count( $items );
+					
+				}
+
 			}
 
 		}
