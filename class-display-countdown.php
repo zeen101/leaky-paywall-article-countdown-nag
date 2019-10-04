@@ -88,14 +88,6 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 	public function get_countdown_html() 
 	{
 
-		echo '<pre>allowed: ';
-		print_r( $this->number_allowed );
-		echo '</pre>';
-
-		echo '<pre>viewed: ';
-		print_r( $this->number_viewed );
-		echo '</pre>';
-
 		$settings = get_lp_acn_settings();
 		$this->content_remaining = $this->number_allowed - $this->number_viewed;
 		$lp_settings = get_leaky_paywall_settings();
