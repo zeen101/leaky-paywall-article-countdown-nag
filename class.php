@@ -98,27 +98,27 @@ class Leaky_Paywall_Article_Countdown_Nag {
         
             <div class="handlediv" title="Click to toggle"><br /></div>
             
-            <h3 class="hndle"><span><?php _e( 'Article Countdown Nag', 'issuem-lp-anc' ); ?></span></h3>
+            <h3 class="hndle"><span><?php _e( 'Article Countdown Nag', 'leaky-paywall' ); ?></span></h3>
             
             <div class="inside">
             
             <table id="leaky_paywall_article_countdown_nag" class="form-table">
             
                 <tr>
-                    <th><?php _e( 'Show Nag After Reading', 'issuem-lp-anc' ); ?></th>
+                    <th><?php _e( 'Show Nag After Reading', 'leaky-paywall' ); ?></th>
                     <td>
-                    <input class="small-text" type="number" value="<?php echo $settings['nag_after_countdown']; ?>" name="nag_after_countdown" /> <?php _e( 'restricted content items', 'issuem-lp-anc' ); ?>
+                    <input class="small-text" type="number" value="<?php echo $settings['nag_after_countdown']; ?>" name="nag_after_countdown" /> <?php _e( 'restricted content items', 'leaky-paywall' ); ?>
                     <p class="description"><?php _e( 'Display the article countdown nag popup after the user has read the given number of restricted content items. <br>Set to 0 to show the nag the first time restricted content is viewed.' ); ?></p>
                     </td>
                 </tr>
 
                 <tr>
-                    <th><?php _e( 'Nag Theme', 'issuem-lp-anc' ); ?></th>
+                    <th><?php _e( 'Nag Theme', 'leaky-paywall' ); ?></th>
                     <td>
                   
                         <select id="nag_theme" name="nag_theme">
-                             <option value="default" <?php selected( 'default' === $settings['nag_theme'] ); ?>><?php _e( 'Default', 'issuem-lp-anc' ); ?></option>
-                             <option value="slim" <?php selected( 'slim' === $settings['nag_theme'] ); ?>><?php _e( 'Slim', 'issuem-lp-anc' ); ?></option>
+                             <option value="default" <?php selected( 'default' === $settings['nag_theme'] ); ?>><?php _e( 'Default', 'leaky-paywall' ); ?></option>
+                             <option value="slim" <?php selected( 'slim' === $settings['nag_theme'] ); ?>><?php _e( 'Slim', 'leaky-paywall' ); ?></option>
                         </select>
 
                     <p class="description"><?php _e( 'Choose theme for article countdown nag popup.' ); ?></p>
@@ -126,11 +126,11 @@ class Leaky_Paywall_Article_Countdown_Nag {
                 </tr>
 
                 <tr>
-                    <th><?php _e( 'Zero Remaining Popup', 'issuem-lp-anc' ); ?></th>
+                    <th><?php _e( 'Zero Remaining Popup', 'leaky-paywall' ); ?></th>
                     <td>
                    		<select id="zero_remaining_popup" name="zero_remaining_popup">
-                             <option value="yes" <?php selected( 'yes' === $settings['zero_remaining_popup'] ); ?>><?php _e( 'Yes', 'issuem-lp-anc' ); ?></option>
-                             <option value="no" <?php selected( 'no' === $settings['zero_remaining_popup'] ); ?>><?php _e( 'No', 'issuem-lp-anc' ); ?></option>
+                             <option value="yes" <?php selected( 'yes' === $settings['zero_remaining_popup'] ); ?>><?php _e( 'Yes', 'leaky-paywall' ); ?></option>
+                             <option value="no" <?php selected( 'no' === $settings['zero_remaining_popup'] ); ?>><?php _e( 'No', 'leaky-paywall' ); ?></option>
                         </select>
                     	<p class="description"><?php _e( 'Display the zero remaining popup over the top of the page when the content limit is reached. If set to "No", the user will instead see the default Leaky Paywall subscribe nag in the content.' ); ?></p>
                     </td>
