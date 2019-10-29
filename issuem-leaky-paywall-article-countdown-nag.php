@@ -61,7 +61,7 @@ function leaky_paywall_article_countdown_nag_plugins_loaded() {
 			require_once( 'functions.php' );
 				
 			//Internationalization
-			load_plugin_textdomain( 'issuem-lp-acn', false, LP_ACN_REL_DIR . '/i18n/' );
+			load_plugin_textdomain( 'leaky-paywall', false, LP_ACN_REL_DIR . '/i18n/' );
 				
 		}
 

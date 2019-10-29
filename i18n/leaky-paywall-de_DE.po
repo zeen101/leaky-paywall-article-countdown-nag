@@ -3,9 +3,9 @@ msgstr ""
 "Project-Id-Version: Leaky Paywall - Article Countdown Nag\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-29 21:56+0000\n"
-"PO-Revision-Date: 2019-10-29 21:59+0000\n"
+"PO-Revision-Date: 2019-10-29 22:12+0000\n"
 "Last-Translator: admin <mohsin.rasool@gmail.com>\n"
-"Language-Team: German\n"
+"Language-Team: Deutsch\n"
 "Language: de_DE\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
@@ -61,7 +61,7 @@ msgstr "Standard"
 
 #: class.php:121
 msgid "Slim"
-msgstr ""
+msgstr "Slim"
 
 #: class.php:129
 msgid "Zero Remaining Popup"
