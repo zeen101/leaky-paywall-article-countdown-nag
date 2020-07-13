@@ -40,6 +40,13 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 			die();
 		}
 
+		// if they are blocked by IP Blocker, then try and show zero screen
+		if ( $this->is_ip_blocked() ) {
+			$this->display_zero_screen();
+			die();
+		}
+
+
 		if ( ! $this->lp_restriction->current_user_can_access() ) {
 			$this->display_zero_screen();
 		} else {
@@ -60,6 +67,43 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 		}
 
 		die();
+
+	}
+
+	public function is_ip_blocked() 
+	{
+		$ip_blocks = get_transient( 'lp_ip_blocks' );
+		$ip_address = $this->get_ip_address();
+
+		if ( false === ( $ip_blocks ) ) {
+			return false;
+		} else {
+
+			if ( in_array( $ip_address, $ip_blocks ) && !leaky_paywall_user_has_access() ) {
+				return true;
+			}
+
+		}
+
+		return false;
+	}
+
+	public function get_ip_address() 
+	{
+		
+		if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+		{
+		  $ip = $_SERVER['HTTP_CLIENT_IP'];
+		}
+		elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+		{
+		  $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		}
+		else
+		{
+		  $ip = $_SERVER['REMOTE_ADDR'];
+		}
+		return $ip;
 
 	}
 
