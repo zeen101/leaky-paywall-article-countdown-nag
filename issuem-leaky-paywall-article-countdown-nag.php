@@ -14,6 +14,9 @@ Author: ZEEN101
 Version: 3.7.0
 Author URI: https://zeen101.com/
 Tags: leaky paywall
+Text Domain: leaky-paywall
+Domain Path: /i18n
+
 */
 
 //Define global variables...
@@ -58,7 +61,7 @@ function leaky_paywall_article_countdown_nag_plugins_loaded() {
 			require_once( 'functions.php' );
 				
 			//Internationalization
-			load_plugin_textdomain( 'issuem-lp-acn', false, LP_ACN_REL_DIR . '/i18n/' );
+			load_plugin_textdomain( 'leaky-paywall', false, LP_ACN_REL_DIR . '/i18n/' );
 				
 		}
 
@@ -91,7 +94,7 @@ add_action( 'plugins_loaded', 'leaky_paywall_article_countdown_nag_plugins_loade
 function leaky_paywall_article_countdown_nag_requirement_nag() {
 	?>
 	<div id="leaky-paywall-requirement-nag" class="update-nag">
-		<?php _e( 'You must have the Leaky Paywall plugin activated to use the Leaky Paywall Countdown Nag plugin.' ); ?>
+		<?php _e( 'You must have the Leaky Paywall plugin activated to use the Leaky Paywall Countdown Nag plugin.', 'leaky-paywall' ); ?>
 	</div>
 	<?php
 }

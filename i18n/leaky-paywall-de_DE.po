@@ -1,0 +1,100 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Leaky Paywall - Article Countdown Nag\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-10-29 21:56+0000\n"
+"PO-Revision-Date: 2020-02-24 17:36+0000\n"
+"Last-Translator: admin <mohsin.rasool@gmail.com>\n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.3.0; wp-5.2.5"
+
+#: class-display-countdown.php:111
+msgid "Subscribe"
+msgstr "Bestellen"
+
+#: class-display-countdown.php:113
+msgid "Login"
+msgstr "Einloggen"
+
+#: class-display-countdown.php:124 class-display-countdown.php:155
+msgid "Subscribe today for full access"
+msgstr "Abonnieren Sie, um alles lesen zu können"
+
+#: class-display-countdown.php:125 class-display-countdown.php:156
+msgid "Current subscriber? Login here"
+msgstr "Aktuelles Abo? Hier einloggen"
+
+#: class-display-countdown.php:140
+msgid "No content remaining"
+msgstr "Kein Gratisinhalt übrig"
+
+#: class-display-countdown.php:172 class-display-countdown.php:173
+#, php-format
+msgid "%s Remaining"
+msgstr "%s Beiträge übrig"
+
+#: class.php:101
+msgid "Article Countdown Nag"
+msgstr "Article Countdown Nag"
+
+#: class.php:108
+msgid "Show Nag After Reading"
+msgstr ""
+
+#: class.php:110
+msgid "restricted content items"
+msgstr "eingeschränkte Inhalte"
+
+#: class.php:116
+msgid "Nag Theme"
+msgstr "Nag Theme"
+
+#: class.php:120
+msgid "Default"
+msgstr "Standard"
+
+#: class.php:121
+msgid "Slim"
+msgstr "Slim"
+
+#: class.php:129
+msgid "Zero Remaining Popup"
+msgstr "Null verbleibendes Popup"
+
+#: class.php:132
+msgid "Yes"
+msgstr "Ja"
+
+#: class.php:133
+msgid "No"
+msgstr "Nein"
+
+#: issuem-leaky-paywall-article-countdown-nag.php:97
+msgid ""
+"You must have the Leaky Paywall plugin activated to use the Leaky Paywall "
+"Countdown Nag plugin."
+msgstr ""
+
+#. Name of the plugin
+msgid "Leaky Paywall - Article Countdown Nag"
+msgstr "Leaky Paywall - Article Countdown Nag"
+
+#. Description of the plugin
+msgid ""
+"Display an article countdown nag to users encouraging them to subscribe."
+msgstr ""
+
+#. URI of the plugin
+#. Author URI of the plugin
+msgid "https://zeen101.com/"
+msgstr "https://zeen101.com/"
+
+#. Author of the plugin
+msgid "ZEEN101"
+msgstr "ZEEN101"
