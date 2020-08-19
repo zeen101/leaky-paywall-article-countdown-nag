@@ -1,14 +1,19 @@
-var $leaky_paywall_article_countdown_nag = jQuery.noConflict();
+( function( $ )  {
 
-$leaky_paywall_article_countdown_nag(document).ready(function($) {
+    $(document).ready( function() {
+        
+        $( '#issuem-leaky-paywall-articles-remaining-nag #issuem-leaky-paywall-articles-remaining-close' ).click( function(e) {
+            e.preventDefault();
+            $( '#issuem-leaky-paywall-articles-remaining-nag' ).animate({ left:'-351px' });
+        });
 
-    $( window ).load( function() {
+    });
 
+    $(window).load( function() {
+        
         var bodyClasses = $('body').attr('class').split(' ');
 
         $.each(bodyClasses, function(i, value) {
-
-            console.log(value);
 
             // for everything but pages
             if ( !value.search('postid' ) ) {
@@ -63,18 +68,11 @@ $leaky_paywall_article_countdown_nag(document).ready(function($) {
                     }, 'html' );
 
                 }
-
                 
             }
         });
 
     });
 
-    $( '#issuem-leaky-paywall-articles-remaining-nag #issuem-leaky-paywall-articles-remaining-close' ).live( 'click', function(e) {
 
-        e.preventDefault();
-        $( '#issuem-leaky-paywall-articles-remaining-nag' ).animate({ left:'-351px' });
-
-    });
-
-});
+})( jQuery );

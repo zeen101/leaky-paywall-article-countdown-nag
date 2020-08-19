@@ -176,7 +176,7 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 	    <?php  $content = trim( ob_get_contents() );
 		ob_end_clean();
 
-		return apply_filters( 'leaky_paywall_acn_countdown', $content, $this->post_id );
+		return apply_filters( 'leaky_paywall_acn_countdown', $content, $this->post_id, $this->content_remaining );
 	}
 
 	public function get_zero_screen_html() 
