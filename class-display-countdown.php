@@ -22,8 +22,13 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 
 	public function __construct() 
 	{
+		add_filter( 'the_content', array( $this, 'the_nag_div' ) );
 		add_action( 'wp_ajax_nopriv_process_countdown_display', array( $this, 'process_countdown_display' ) );
 		add_action( 'wp_ajax_process_countdown_display', array( $this, 'process_countdown_display' ) );
+	}
+	
+	public function the_nag_div( $content ) {
+		return $content . '<div id="issuem-leaky-paywall-articles-remaining-nag"></div>';
 	}
 
 	public function process_countdown_display() 
@@ -141,8 +146,7 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 
 	    ob_start(); ?>
 	    
-	    	<div id="issuem-leaky-paywall-articles-remaining-nag">
-				<div id="issuem-leaky-paywall-articles-remaining-close">x</div>
+				<a id="issuem-leaky-paywall-articles-remaining-close">x</a>
 
 				<?php if ($settings['nag_theme'] == 'slim' ) {
 					?>
@@ -169,10 +173,7 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 					<div id="issuem-leaky-paywall-articles-remaining-login-link"><a href="<?php echo esc_js( $login_url ); ?>"><?php _e( 'Current subscriber? Login here', 'leaky-paywall' ); ?></a></div>
 					<?php 
 				} ?>
-				
-			</div>
 
-	    
 	    <?php  $content = trim( ob_get_contents() );
 		ob_end_clean();
 
