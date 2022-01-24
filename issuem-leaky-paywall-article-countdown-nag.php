@@ -1,18 +1,18 @@
 <?php
 /**
- * Main PHP file used to for initial calls to zeen101's Leak Paywall classes and functions.
+ * Main PHP file used to for initial calls to Leaky Paywall classes and functions.
  *
- * @package zeen101's Leaky Paywall - Article Countdown Nag
+ * @package Leaky Paywall - Article Countdown Nag
  * @since 1.0.0
  */
  
 /*
 Plugin Name: Leaky Paywall - Article Countdown Nag
-Plugin URI: https://zeen101.com/
+Plugin URI: https://leakypaywall.com/
 Description: Display an article countdown nag to users encouraging them to subscribe. 
-Author: ZEEN101
-Version: 3.7.3
-Author URI: https://zeen101.com/
+Author: Leaky Paywall
+Version: 3.7.4
+Author URI: https://leakypaywall.com/
 Tags: leaky paywall
 Text Domain: leaky-paywall
 Domain Path: /i18n
@@ -25,7 +25,7 @@ if ( !defined( 'ZEEN101_STORE_URL' ) )
 	
 define( 'LP_ACN_NAME', 		'Leaky Paywall - Article Countdown Nag' );
 define( 'LP_ACN_SLUG', 		'issuem-leaky-paywall-article-countdown-nag' );
-define( 'LP_ACN_VERSION', 	'3.7.3' );
+define( 'LP_ACN_VERSION', 	'3.7.4' );
 define( 'LP_ACN_DB_VERSION', '1.0.0' );
 define( 'LP_ACN_URL', 		plugin_dir_url( __FILE__ ) );
 define( 'LP_ACN_PATH', 		plugin_dir_path( __FILE__ ) );

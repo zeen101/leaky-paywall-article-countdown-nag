@@ -94,13 +94,10 @@ class Leaky_Paywall_Article_Countdown_Nag {
 		$settings = $this->get_settings();
 
 		?>
-        <div id="modules" class="postbox">
         
-            <div class="handlediv" title="Click to toggle"><br /></div>
+          
+            <h3><span><?php _e( 'Article Countdown Nag', 'leaky-paywall' ); ?></span></h3>
             
-            <h3 class="hndle"><span><?php _e( 'Article Countdown Nag', 'leaky-paywall' ); ?></span></h3>
-            
-            <div class="inside">
             
             <table id="leaky_paywall_article_countdown_nag" class="form-table">
             
@@ -138,9 +135,6 @@ class Leaky_Paywall_Article_Countdown_Nag {
                 
             </table>
           
-            </div>
-            
-        </div>
 		<?php
 		
 	}
