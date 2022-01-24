@@ -22,13 +22,14 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 
 	public function __construct() 
 	{
-		add_filter( 'the_content', array( $this, 'the_nag_div' ) );
+		// add_filter( 'the_content', array( $this, 'the_nag_div' ) );
+		add_action( 'wp_footer', array( $this, 'the_nag_div' ) );
 		add_action( 'wp_ajax_nopriv_process_countdown_display', array( $this, 'process_countdown_display' ) );
 		add_action( 'wp_ajax_process_countdown_display', array( $this, 'process_countdown_display' ) );
 	}
 	
-	public function the_nag_div( $content ) {
-		return $content . '<div id="issuem-leaky-paywall-articles-remaining-nag"></div>';
+	public function the_nag_div() {
+		echo '<div id="issuem-leaky-paywall-articles-remaining-nag"></div>';
 	}
 
 	public function process_countdown_display() 

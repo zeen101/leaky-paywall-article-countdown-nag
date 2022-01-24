@@ -22,9 +22,11 @@ $lpacdn_jquery( document ).ready( function($) {
                 $.get(lp_acn.ajaxurl, data, function(response) {
                     if ( response ) {
                         $( '#issuem-leaky-paywall-articles-remaining-nag' ).append( response );
-                        $( '#issuem-leaky-paywall-articles-remaining-nag' ).delay( 3000 ).animate({ left:'0px' });
+                       
                         if ( $('.acn-zero-remaining-overlay').length > 0 ) {
                             $('html').css('overflow', 'hidden');
+                        } else {
+                            $( '#issuem-leaky-paywall-articles-remaining-nag' ).delay( 3000 ).animate({ left:'0px' });
                         }
                     }
                       
