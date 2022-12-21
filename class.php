@@ -22,8 +22,11 @@ class Leaky_Paywall_Article_Countdown_Nag {
 	public function __construct() {
 				
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
-		add_action( 'leaky_paywall_after_general_settings', array( $this, 'settings_div' ) );
-		add_action( 'leaky_paywall_update_settings', array( $this, 'update_settings_div' ) );
+
+
+		add_filter( 'leaky_paywall_settings_tab_sections', array( $this, 'add_setting_section' ) );
+		add_action( 'leaky_paywall_output_settings_fields', array( $this, 'display_settings_fields' ), 10, 2 );
+		add_action( 'leaky_paywall_update_settings', array( $this, 'save_settings_fields' ), 20, 3 );
 
 	}
 
@@ -72,31 +75,37 @@ class Leaky_Paywall_Article_Countdown_Nag {
 		return wp_parse_args( $settings, $defaults );
 		
 	}
-	
-	/**
-	 * Update zeen101's Leaky Paywall options
-	 *
-	 * @since 1.0.0
-	 */
-	public function update_settings( $settings ) {
-		
-		update_option( 'issuem-leaky-paywall-article-countdown-nag', $settings );
-		
-	}
-	
-	/**
-	 * Create and Display settings page
-	 *
-	 * @since 1.0.0
-	 */
-	public function settings_div() {
-		
-		$settings = $this->get_settings();
 
+	/**
+	 * Add Leaky Paywall - Article Countdown Nag section to general settings
+	 *
+	 * @since 1.0.0
+	 */
+	public function add_setting_section( $sections )
+	{
+		$sections['general'][] = 'article_countdown_nag';
+		return $sections;
+	}
+
+	/**
+	 * Display Leaky Paywall - Registration Redirect options
+	 *
+	 * @since 1.0.0
+	 */
+	public function display_settings_fields( $current_tab, $current_section )
+	{
+
+		if ( $current_tab != 'general' ) {
+			return;
+		}
+
+		if ( $current_section != 'article_countdown_nag' ) {
+			return;
+		}
+
+		$settings = $this->get_settings();
 		?>
-        
-          
-            <h3><span><?php _e( 'Article Countdown Nag', 'leaky-paywall' ); ?></span></h3>
+			 <h3><span><?php _e( 'Article Countdown Nag', 'leaky-paywall' ); ?></span></h3>
             
             
             <table id="leaky_paywall_article_countdown_nag" class="form-table">
@@ -134,28 +143,29 @@ class Leaky_Paywall_Article_Countdown_Nag {
                 </tr>
                 
             </table>
-          
-		<?php
-		
+
+		<?php 
+
 	}
-	
-	public function update_settings_div() {
 
-		if(isset($_GET['tab'])) {
-			$tab = $_GET['tab'];
-		} else if ( $_GET['page'] == 'issuem-leaky-paywall' ) {
-			$tab = 'general';
-		} else {
-			$tab = '';
-		}
-
-		if ( $tab != 'general' ) {
+	/**
+	 * Save Leaky Paywall - Article Countdown Nag options
+	 *
+	 * @since 1.0.0
+	 */
+	public function save_settings_fields( $settings, $current_tab, $current_section )
+	{
+		if ( $current_tab != 'general' ) {
 			return;
 		}
-	
+
+		if ( $current_section != 'article_countdown_nag' ) {
+			return;
+		}
+
 		// Get the user options
 		$settings = $this->get_settings();
-			
+				
 		if ( !empty( $_POST['nag_after_countdown'] ) ) {
 			$settings['nag_after_countdown'] = absint( trim( $_POST['nag_after_countdown'] ) );
 		} else {
@@ -171,6 +181,17 @@ class Leaky_Paywall_Article_Countdown_Nag {
 		}
 		
 		$this->update_settings( $settings );
+
+	}
+	
+	/**
+	 * Update Leaky Paywall - Article Countdown Nag options
+	 *
+	 * @since 1.0.0
+	 */
+	public function update_settings( $settings ) {
+		
+		update_option( 'issuem-leaky-paywall-article-countdown-nag', $settings );
 		
 	}
 	
