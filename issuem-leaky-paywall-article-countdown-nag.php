@@ -5,11 +5,11 @@
  * @package Leaky Paywall - Article Countdown Nag
  * @since   1.0.0
  */
- 
+
 /*
 Plugin Name: Leaky Paywall - Article Countdown Nag
 Plugin URI: https://leakypaywall.com/
-Description: Display an article countdown nag to users encouraging them to subscribe. 
+Description: Display an article countdown nag to users encouraging them to subscribe.
 Author: Leaky Paywall
 Version: 3.8.1
 Author URI: https://leakypaywall.com/
@@ -23,7 +23,7 @@ Domain Path: /i18n
 if (!defined('ZEEN101_STORE_URL') ) {
     define('ZEEN101_STORE_URL',     'https://zeen101.com');
 }
-    
+
 define('LP_ACN_NAME',         'Leaky Paywall - Article Countdown Nag');
 define('LP_ACN_SLUG',         'issuem-leaky-paywall-article-countdown-nag');
 define('LP_ACN_VERSION',     '3.8.1');
@@ -40,7 +40,7 @@ define('LP_ACN_REL_DIR',     dirname(LP_ACN_BASENAME));
  */
 function leaky_paywall_article_countdown_nag_plugins_loaded()
 {
-    
+
     include_once ABSPATH . 'wp-admin/includes/plugin.php';
     if (is_plugin_active('issuem/issuem.php') ) {
         define('ACTIVE_LP_ACN', true);
@@ -48,31 +48,32 @@ function leaky_paywall_article_countdown_nag_plugins_loaded()
         define('ACTIVE_LP_ACN', false);
     }
 
-    if (is_plugin_active('issuem-leaky-paywall/issuem-leaky-paywall.php') 
-        || is_plugin_active('leaky-paywall/leaky-paywall.php') 
+    if (is_plugin_active('issuem-leaky-paywall/issuem-leaky-paywall.php')
+        || is_plugin_active('leaky-paywall/leaky-paywall.php')
     ) {
 
         include_once 'class.php';
         include_once 'class-display-countdown.php';
-        
+        include_once 'include/updates.php';
+
         // Instantiate the Pigeon Pack class
         if (class_exists('Leaky_Paywall_Article_Countdown_Nag') ) {
-            
+
             global $leaky_paywall_article_countdown_nag;
-            
+
             $leaky_paywall_article_countdown_nag = new Leaky_Paywall_Article_Countdown_Nag();
-            
+
             include_once 'functions.php';
-                
+
             //Internationalization
-            load_plugin_textdomain('leaky-paywall', false, LP_ACN_REL_DIR . '/i18n/');
-                
+            load_plugin_textdomain('issuem-leaky-paywall-article-countdown-nag', false, LP_ACN_REL_DIR . '/i18n/');
+
         }
 
         // Upgrade function based on EDD updater class
         if(!class_exists('EDD_LP_Plugin_Updater') ) {
             include dirname(__FILE__) . '/include/EDD_LP_Plugin_Updater.php';
-        } 
+        }
 
         $license = new Leaky_Paywall_License_Key(LP_ACN_SLUG, LP_ACN_NAME);
 
@@ -82,16 +83,16 @@ function leaky_paywall_article_countdown_nag_plugins_loaded()
         $edd_updater = new EDD_LP_Plugin_Updater(
             ZEEN101_STORE_URL, __FILE__, array(
             'version'     => LP_ACN_VERSION, // current version number
-            'license'     => $license_key,    
-            'item_name' => LP_ACN_NAME,    
+            'license'     => $license_key,
+            'item_id' => 9626,
             'author'     => 'Zeen101 Development Team'
-            ) 
+            )
         );
-    
+
     } else {
-    
+
         add_action('admin_notices', 'leaky_paywall_article_countdown_nag_requirement_nag');
-        
+
     }
 
 }
@@ -101,7 +102,7 @@ function leaky_paywall_article_countdown_nag_requirement_nag()
 {
     ?>
     <div id="leaky-paywall-requirement-nag" class="update-nag">
-    <?php _e('You must have the Leaky Paywall plugin activated to use the Leaky Paywall Countdown Nag plugin.', 'leaky-paywall'); ?>
+    <?php _e('You must have the Leaky Paywall plugin activated to use the Leaky Paywall Countdown Nag plugin.', 'issuem-leaky-paywall-article-countdown-nag'); ?>
     </div>
     <?php
 }
