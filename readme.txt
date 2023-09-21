@@ -2,16 +2,16 @@
 Contributors: layotte, peterericson, endocreative
 Tags: metered, paywall, leaky, wordpress, magazine, news, blog, articles, remaining
 Requires at least: 5.6
-Tested up to: 6.1.1
-Stable tag: 3.8.1
+Tested up to: 6.3.1
+Stable tag: 3.8.2
 
-Creates an <a href="https://zeen101.com/downloads/article-countdown-nag/">Article Countdown Nag</a> for zeen101's Leaky Paywall WordPress plugin. More info at http://zeen101.com
+Creates an <a href="https://leakypaywall.com/downloads/article-countdown-nag/">Article Countdown Nag</a> for Leaky Paywall WordPress plugin. More info at https://leakypaywall.com
 
 == Description ==
 
 Lets the reader know how many free articles/pages they have left before they need to subscribe.
 Requires zeen101's Leaky Paywall plugin.
-More info at <a href="https://zeen101.com/">ZEEN101.com</a>
+More info at <a href="https://leakypaywall.com/">Leaky Paywall</a>
 
 You can follow this plugins development on [GitHub](https://github.com/zeen101/issuem-leaky-paywall-article-countdown-nag)
 
@@ -30,11 +30,14 @@ You must have:
 * PHP 7
 * Leaky Paywall version 4.0.0 or later
 
-= How is zeen101's Leaky Paywall Licensed? =
+= How is Leaky Paywall Licensed? =
 
 * Leaky Paywall - Article Countdown Nag is GPL
 
 == Changelog ==
+
+= 3.8.2 =
+* Update text domain for translations
 
 = 3.8.1 =
 * Integrate zero nag with registration redirect extension
@@ -79,7 +82,7 @@ You must have:
 * Add leaky_paywall_acn_countdown_after_remaining_text action
 * Add leaky_paywall_acn_zero_screen filter for adjusting html output of zero screen
 * Add leaky_paywall_acn_zero_screen_remaining_text filter
-* Add leaky_paywall_acn_zero_screen_after_remaining_text action 
+* Add leaky_paywall_acn_zero_screen_after_remaining_text action
 
 
 = 3.4.3 =
@@ -94,7 +97,7 @@ You must have:
 * Security fix by changing use of maybe_unseralize to json_decode on zero nag
 
 = 3.4.0 =
-* Security fix by changing use of maybe_unseralize to json_decode 
+* Security fix by changing use of maybe_unseralize to json_decode
 
 = 3.3.0 =
 * Fix bug so nag obey's single post visibility settings
