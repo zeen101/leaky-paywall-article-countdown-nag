@@ -105,40 +105,40 @@ class Leaky_Paywall_Article_Countdown_Nag {
 
 		$settings = $this->get_settings();
 		?>
-			 <h3><span><?php _e( 'Article Countdown Nag', 'issuem-leaky-paywall-article-countdown-nag' ); ?></span></h3>
+			 <h3><span><?php _e( 'Article Countdown Nag', 'lp-acn' ); ?></span></h3>
 
 
             <table id="leaky_paywall_article_countdown_nag" class="form-table">
 
                 <tr>
-                    <th><?php _e( 'Show Nag After Reading', 'issuem-leaky-paywall-article-countdown-nag' ); ?></th>
+                    <th><?php _e( 'Show Nag After Reading', 'lp-acn' ); ?></th>
                     <td>
-                    <input class="small-text" type="number" value="<?php echo $settings['nag_after_countdown']; ?>" name="nag_after_countdown" /> <?php _e( 'restricted content items', 'issuem-leaky-paywall-article-countdown-nag' ); ?>
+                    <input class="small-text" type="number" value="<?php echo $settings['nag_after_countdown']; ?>" name="nag_after_countdown" /> <?php _e( 'restricted content items', 'lp-acn' ); ?>
                     <p class="description"><?php _e( 'Display the article countdown nag popup after the user has read the given number of restricted content items. <br>Set to 0 to show the nag the first time restricted content is viewed.' ); ?></p>
                     </td>
                 </tr>
 
                 <tr>
-                    <th><?php _e( 'Nag Theme', 'issuem-leaky-paywall-article-countdown-nag' ); ?></th>
+                    <th><?php _e( 'Nag Theme', 'lp-acn' ); ?></th>
                     <td>
 
                         <select id="nag_theme" name="nag_theme">
-                             <option value="default" <?php selected( 'default' === $settings['nag_theme'] ); ?>><?php _e( 'Default', 'issuem-leaky-paywall-article-countdown-nag' ); ?></option>
-                             <option value="slim" <?php selected( 'slim' === $settings['nag_theme'] ); ?>><?php _e( 'Slim', 'issuem-leaky-paywall-article-countdown-nag' ); ?></option>
+                             <option value="default" <?php selected( 'default' === $settings['nag_theme'] ); ?>><?php _e( 'Default', 'lp-acn' ); ?></option>
+                             <option value="slim" <?php selected( 'slim' === $settings['nag_theme'] ); ?>><?php _e( 'Slim', 'lp-acn' ); ?></option>
                         </select>
 
-                    <p class="description"><?php _e( 'Choose theme for article countdown nag popup.' ); ?></p>
+                    <p class="description"><?php _e( 'Choose theme for article countdown nag popup.', 'lp-acn' ); ?></p>
                     </td>
                 </tr>
 
                 <tr>
-                    <th><?php _e( 'Zero Remaining Popup', 'issuem-leaky-paywall-article-countdown-nag' ); ?></th>
+                    <th><?php _e( 'Zero Remaining Popup', 'lp-acn' ); ?></th>
                     <td>
                    		<select id="zero_remaining_popup" name="zero_remaining_popup">
-                             <option value="yes" <?php selected( 'yes' === $settings['zero_remaining_popup'] ); ?>><?php _e( 'Yes', 'issuem-leaky-paywall-article-countdown-nag' ); ?></option>
-                             <option value="no" <?php selected( 'no' === $settings['zero_remaining_popup'] ); ?>><?php _e( 'No', 'issuem-leaky-paywall-article-countdown-nag' ); ?></option>
+                             <option value="yes" <?php selected( 'yes' === $settings['zero_remaining_popup'] ); ?>><?php _e( 'Yes', 'lp-acn' ); ?></option>
+                             <option value="no" <?php selected( 'no' === $settings['zero_remaining_popup'] ); ?>><?php _e( 'No', 'lp-acn' ); ?></option>
                         </select>
-                    	<p class="description"><?php _e( 'Display the zero remaining popup over the top of the page when the content limit is reached. If set to "No", the user will instead see the default Leaky Paywall subscribe nag in the content.' ); ?></p>
+                    	<p class="description"><?php _e( 'Display the zero remaining popup over the top of the page when the content limit is reached. If set to "No", the user will instead see the default Leaky Paywall subscribe nag in the content.', 'lp-acn' ); ?></p>
                     </td>
                 </tr>
 

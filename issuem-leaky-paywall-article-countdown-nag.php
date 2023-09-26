@@ -11,12 +11,10 @@ Plugin Name: Leaky Paywall - Article Countdown Nag
 Plugin URI: https://leakypaywall.com/
 Description: Display an article countdown nag to users encouraging them to subscribe.
 Author: Leaky Paywall
-Version: 3.8.3
+Version: 3.8.4
 Author URI: https://leakypaywall.com/
 Tags: leaky paywall
-Text Domain: leaky-paywall
-Domain Path: /i18n
-
+License: GPL2
 */
 
 //Define global variables...
@@ -26,7 +24,7 @@ if (!defined('ZEEN101_STORE_URL') ) {
 
 define('LP_ACN_NAME',         'Leaky Paywall - Article Countdown Nag');
 define('LP_ACN_SLUG',         'issuem-leaky-paywall-article-countdown-nag');
-define('LP_ACN_VERSION',     '3.8.3');
+define('LP_ACN_VERSION',     '3.8.4');
 define('LP_ACN_DB_VERSION', '1.0.0');
 define('LP_ACN_URL',         plugin_dir_url(__FILE__));
 define('LP_ACN_PATH',         plugin_dir_path(__FILE__));
@@ -65,6 +63,9 @@ function leaky_paywall_article_countdown_nag_plugins_loaded()
 
             include_once 'functions.php';
 
+            //Internationalization
+            load_plugin_textdomain('lp-acn', false, LP_ACN_REL_DIR . '/i18n/');
+
         }
 
         // Upgrade function based on EDD updater class
@@ -99,7 +100,7 @@ function leaky_paywall_article_countdown_nag_requirement_nag()
 {
     ?>
     <div id="leaky-paywall-requirement-nag" class="update-nag">
-    <?php _e('You must have the Leaky Paywall plugin activated to use the Leaky Paywall Countdown Nag plugin.', 'issuem-leaky-paywall-article-countdown-nag'); ?>
+    <?php _e('You must have the Leaky Paywall plugin activated to use the Leaky Paywall Countdown Nag plugin.', 'lp-acn'); ?>
     </div>
     <?php
 }
