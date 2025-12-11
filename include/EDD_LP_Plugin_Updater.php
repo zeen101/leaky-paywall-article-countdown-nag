@@ -1,7 +1,7 @@
 <?php
 
 // Exit if accessed directly
-if (!defined('ABSPATH')) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
@@ -9,19 +9,19 @@ if (!defined('ABSPATH')) {
  * Allows plugins to use their own update API.
  *
  * @author Easy Digital Downloads
- * @version 1.9.2
+ * @version 1.9.4
  */
 class EDD_LP_Plugin_Updater
 {
 
-	private $api_url              = '';
-	private $api_data             = array();
-	private $plugin_file          = '';
-	private $name                 = '';
-	private $slug                 = '';
-	private $version              = '';
-	private $wp_override          = false;
-	private $beta                 = false;
+	private $api_url     = '';
+	private $api_data    = array();
+	private $plugin_file = '';
+	private $name        = '';
+	private $slug        = '';
+	private $version     = '';
+	private $wp_override = false;
+	private $beta        = false;
 	private $failed_request_cache_key;
 
 	/**
@@ -43,10 +43,10 @@ class EDD_LP_Plugin_Updater
 		$this->api_data                 = $_api_data;
 		$this->plugin_file              = $_plugin_file;
 		$this->name                     = plugin_basename($_plugin_file);
-		$this->slug                     = basename($_plugin_file, '.php');
+		$this->slug                     = basename(dirname($_plugin_file));
 		$this->version                  = $_api_data['version'];
 		$this->wp_override              = isset($_api_data['wp_override']) ? (bool) $_api_data['wp_override'] : false;
-		$this->beta                     = !empty($this->api_data['beta']) ? true : false;
+		$this->beta                     = ! empty($this->api_data['beta']) ? true : false;
 		$this->failed_request_cache_key = 'edd_sl_failed_http_' . md5($this->api_url);
 
 		$edd_plugin_data[$this->slug] = $this->api_data;
@@ -96,17 +96,15 @@ class EDD_LP_Plugin_Updater
 	public function check_update($_transient_data)
 	{
 
-		global $pagenow;
-
-		if (!is_object($_transient_data)) {
+		if (! is_object($_transient_data)) {
 			$_transient_data = new stdClass();
 		}
 
-		if (!empty($_transient_data->response) && !empty($_transient_data->response[$this->name]) && false === $this->wp_override) {
+		if (! empty($_transient_data->response) && ! empty($_transient_data->response[$this->name]) && false === $this->wp_override) {
 			return $_transient_data;
 		}
 
-		$current = $this->get_repo_api_data();
+		$current = $this->get_update_transient_data();
 		if (false !== $current && is_object($current) && isset($current->new_version)) {
 			if (version_compare($this->version, $current->new_version, '<')) {
 				$_transient_data->response[$this->name] = $current;
@@ -139,7 +137,7 @@ class EDD_LP_Plugin_Updater
 					'beta' => $this->beta,
 				)
 			);
-			if (!$version_info) {
+			if (! $version_info) {
 				return false;
 			}
 
@@ -147,11 +145,47 @@ class EDD_LP_Plugin_Updater
 			$version_info->plugin = $this->name;
 			$version_info->id     = $this->name;
 			$version_info->tested = $this->get_tested_version($version_info);
+			if (! isset($version_info->requires)) {
+				$version_info->requires = '';
+			}
+			if (! isset($version_info->requires_php)) {
+				$version_info->requires_php = '';
+			}
 
 			$this->set_version_info_cache($version_info);
 		}
 
 		return $version_info;
+	}
+
+	/**
+	 * Gets a limited set of data from the API response.
+	 * This is used for the update_plugins transient.
+	 *
+	 * @since 3.8.12
+	 * @return \stdClass|false
+	 */
+	private function get_update_transient_data()
+	{
+		$version_info = $this->get_repo_api_data();
+
+		if (! $version_info) {
+			return false;
+		}
+
+		$limited_data               = new \stdClass();
+		$limited_data->slug         = $this->slug;
+		$limited_data->plugin       = $this->name;
+		$limited_data->url          = $version_info->url;
+		$limited_data->package      = $version_info->package;
+		$limited_data->icons        = $this->convert_object_to_array($version_info->icons);
+		$limited_data->banners      = $this->convert_object_to_array($version_info->banners);
+		$limited_data->new_version  = $version_info->new_version;
+		$limited_data->tested       = $version_info->tested;
+		$limited_data->requires     = $version_info->requires;
+		$limited_data->requires_php = $version_info->requires_php;
+
+		return $limited_data;
 	}
 
 	/**
@@ -197,12 +231,12 @@ class EDD_LP_Plugin_Updater
 	{
 
 		// Return early if in the network admin, or if this is not a multisite install.
-		if (is_network_admin() || !is_multisite()) {
+		if (is_network_admin() || ! is_multisite()) {
 			return;
 		}
 
 		// Allow single site admins to see that an update is available.
-		if (!current_user_can('activate_plugins')) {
+		if (! current_user_can('activate_plugins')) {
 			return;
 		}
 
@@ -213,8 +247,8 @@ class EDD_LP_Plugin_Updater
 		// Do not print any message if update does not exist.
 		$update_cache = get_site_transient('update_plugins');
 
-		if (!isset($update_cache->response[$this->name])) {
-			if (!is_object($update_cache)) {
+		if (! isset($update_cache->response[$this->name])) {
+			if (! is_object($update_cache)) {
 				$update_cache = new stdClass();
 			}
 			$update_cache->response[$this->name] = $this->get_repo_api_data();
@@ -236,7 +270,7 @@ class EDD_LP_Plugin_Updater
 		echo '<div class="update-message notice inline notice-warning notice-alt"><p>';
 
 		$changelog_link = '';
-		if (!empty($update_cache->response[$this->name]->sections->changelog)) {
+		if (! empty($update_cache->response[$this->name]->sections->changelog)) {
 			$changelog_link = add_query_arg(
 				array(
 					'edd_sl_action' => 'view_plugin_changelog',
@@ -263,10 +297,10 @@ class EDD_LP_Plugin_Updater
 			esc_html($plugin['Name'])
 		);
 
-		if (!current_user_can('update_plugins')) {
+		if (! current_user_can('update_plugins')) {
 			echo ' ';
 			esc_html_e('Contact your network administrator to install the update.', 'easy-digital-downloads');
-		} elseif (empty($update_cache->response[$this->name]->package) && !empty($changelog_link)) {
+		} elseif (empty($update_cache->response[$this->name]->package) && ! empty($changelog_link)) {
 			echo ' ';
 			printf(
 				/* translators: 1. opening anchor tag, do not translate 2. the new plugin version 3. closing anchor tag, do not translate. */
@@ -275,7 +309,7 @@ class EDD_LP_Plugin_Updater
 				esc_html($update_cache->response[$this->name]->new_version),
 				'</a>'
 			);
-		} elseif (!empty($changelog_link)) {
+		} elseif (! empty($changelog_link)) {
 			echo ' ';
 			printf(
 				__('%1$sView version %2$s details%3$s or %4$supdate now%5$s.', 'easy-digital-downloads'),
@@ -330,7 +364,7 @@ class EDD_LP_Plugin_Updater
 			return $_data;
 		}
 
-		if (!isset($_args->slug) || ($_args->slug !== $this->slug)) {
+		if (! isset($_args->slug) || ($_args->slug !== $this->slug)) {
 
 			return $_data;
 		}
@@ -364,27 +398,31 @@ class EDD_LP_Plugin_Updater
 		}
 
 		// Convert sections into an associative array, since we're getting an object, but Core expects an array.
-		if (isset($_data->sections) && !is_array($_data->sections)) {
+		if (isset($_data->sections) && ! is_array($_data->sections)) {
 			$_data->sections = $this->convert_object_to_array($_data->sections);
 		}
 
 		// Convert banners into an associative array, since we're getting an object, but Core expects an array.
-		if (isset($_data->banners) && !is_array($_data->banners)) {
+		if (isset($_data->banners) && ! is_array($_data->banners)) {
 			$_data->banners = $this->convert_object_to_array($_data->banners);
 		}
 
 		// Convert icons into an associative array, since we're getting an object, but Core expects an array.
-		if (isset($_data->icons) && !is_array($_data->icons)) {
+		if (isset($_data->icons) && ! is_array($_data->icons)) {
 			$_data->icons = $this->convert_object_to_array($_data->icons);
 		}
 
 		// Convert contributors into an associative array, since we're getting an object, but Core expects an array.
-		if (isset($_data->contributors) && !is_array($_data->contributors)) {
+		if (isset($_data->contributors) && ! is_array($_data->contributors)) {
 			$_data->contributors = $this->convert_object_to_array($_data->contributors);
 		}
 
-		if (!isset($_data->plugin)) {
+		if (! isset($_data->plugin)) {
 			$_data->plugin = $this->name;
+		}
+
+		if (! isset($_data->version) && ! empty($_data->new_version)) {
+			$_data->version = $_data->new_version;
 		}
 
 		return $_data;
@@ -404,7 +442,7 @@ class EDD_LP_Plugin_Updater
 	 */
 	private function convert_object_to_array($data)
 	{
-		if (!is_array($data) && !is_object($data)) {
+		if (! is_array($data) && ! is_object($data)) {
 			return array();
 		}
 		$new_data = array();
@@ -474,7 +512,7 @@ class EDD_LP_Plugin_Updater
 		$failed_request_details = get_option($this->failed_request_cache_key);
 
 		// Request has never failed.
-		if (empty($failed_request_details) || !is_numeric($failed_request_details)) {
+		if (empty($failed_request_details) || ! is_numeric($failed_request_details)) {
 			return false;
 		}
 
@@ -525,14 +563,14 @@ class EDD_LP_Plugin_Updater
 			return;
 		}
 
-		if (!current_user_can('update_plugins')) {
+		if (! current_user_can('update_plugins')) {
 			wp_die(esc_html__('You do not have permission to install plugin updates', 'easy-digital-downloads'), esc_html__('Error', 'easy-digital-downloads'), array('response' => 403));
 		}
 
 		$version_info = $this->get_repo_api_data();
 		if (isset($version_info->sections)) {
 			$sections = $this->convert_object_to_array($version_info->sections);
-			if (!empty($sections['changelog'])) {
+			if (! empty($sections['changelog'])) {
 				echo '<div style="background:#fff;padding:10px;">' . wp_kses_post($sections['changelog']) . '</div>';
 			}
 		}
@@ -549,7 +587,7 @@ class EDD_LP_Plugin_Updater
 	{
 		$api_params = array(
 			'edd_action'  => 'get_version',
-			'license'     => !empty($this->api_data['license']) ? $this->api_data['license'] : '',
+			'license'     => ! empty($this->api_data['license']) ? $this->api_data['license'] : '',
 			'item_name'   => isset($this->api_data['item_name']) ? $this->api_data['item_name'] : false,
 			'item_id'     => isset($this->api_data['item_id']) ? $this->api_data['item_id'] : false,
 			'version'     => isset($this->api_data['version']) ? $this->api_data['version'] : false,
@@ -601,7 +639,7 @@ class EDD_LP_Plugin_Updater
 			$request->icons = maybe_unserialize($request->icons);
 		}
 
-		if (!empty($request->sections)) {
+		if (! empty($request->sections)) {
 			foreach ($request->sections as $key => $section) {
 				$request->$key = (array) $section;
 			}
@@ -632,7 +670,7 @@ class EDD_LP_Plugin_Updater
 
 		// We need to turn the icons into an array, thanks to WP Core forcing these into an object at some point.
 		$cache['value'] = json_decode($cache['value']);
-		if (!empty($cache['value']->icons)) {
+		if (! empty($cache['value']->icons)) {
 			$cache['value']->icons = (array) $cache['value']->icons;
 		}
 
