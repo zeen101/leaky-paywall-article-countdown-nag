@@ -47,7 +47,8 @@ class Leaky_Paywall_Article_Countdown_Nag
 		$protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
 
 		$params = array(
-			'ajaxurl' => admin_url('admin-ajax.php', $protocol)
+			'ajaxurl' => admin_url('admin-ajax.php', $protocol),
+			'restUrl' => esc_url_raw(rest_url('lp-acn/v1/countdown')),
 		);
 
 		wp_localize_script('leaky-paywall-article-countdown-nag', 'lp_acn', $params);

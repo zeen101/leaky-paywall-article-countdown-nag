@@ -2,66 +2,50 @@ var $lpacdn_jquery = jQuery.noConflict();
 
 $lpacdn_jquery( document ).ready( function($) {
 
-    var bodyClasses = $('body').attr('class').split(' ');
+    // Resolve the current post/page ID from the body classes.
+    var postId = 0;
+    var bodyClasses = ( $('body').attr('class') || '' ).split(' ');
 
     $.each(bodyClasses, function(i, value) {
+        if ( value.indexOf('postid-') === 0 ) {
+            postId = parseInt( value.split('-')[1], 10 );
+        } else if ( value.indexOf('page-id-') === 0 ) {
+            postId = parseInt( value.split('-')[2], 10 );
+        }
+    });
 
-        // for everything but pages
-        if ( !value.search('postid' ) ) {
+    if ( ! postId ) {
+        return;
+    }
 
-            var classArray = value.split('-');
-            var post_id = parseInt( classArray[1] );
+    // Read the visitor's viewed-content history from localStorage — the same
+    // store LP core's restriction check uses under 5.x. This is what the legacy
+    // cookie-based path could no longer see reliably.
+    var viewedContent = {};
+    try {
+        viewedContent = JSON.parse( window.localStorage.getItem('lp_viewed_content') ) || {};
+    } catch ( e ) {
+        viewedContent = {};
+    }
 
-            if ( post_id > 0 ) {
+    $.ajax({
+        url: lp_acn.restUrl,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ post_id: postId, viewed_content: viewedContent })
+    }).done(function(resp) {
 
-                var data = {
-                    action: 'process_countdown_display',
-                    post_id: post_id
-                };
-
-                $.get(lp_acn.ajaxurl, data, function(response) {
-                    if ( response ) {
-                        $( '#issuem-leaky-paywall-articles-remaining-nag' ).append( response );
-
-                        if ( $('.acn-zero-remaining-overlay').length > 0 ) {
-                            $('html').css('overflow', 'hidden');
-                        } else {
-                            $( '#issuem-leaky-paywall-articles-remaining-nag' ).delay( 3000 ).animate({ left:'0px' });
-                        }
-                    }
-
-                }, 'html' );
-
-            }
-
+        if ( ! resp || 'none' === resp.state || ! resp.html ) {
+            return;
         }
 
-        // for pages
-        if ( !value.search('page-id' ) ) {
-            var classArray = value.split('-');
-            var page_id = parseInt( classArray[2] );
+        var $nag = $( '#issuem-leaky-paywall-articles-remaining-nag' );
+        $nag.append( resp.html );
 
-            if ( page_id > 0 ) {
-
-                var data = {
-                    action: 'process_countdown_display',
-                    post_id: page_id
-                };
-
-                $.get(lp_acn.ajaxurl, data, function(response) {
-                    if ( response ) {
-                        $( '#issuem-leaky-paywall-articles-remaining-nag' ).append( response );
-                        $( '#issuem-leaky-paywall-articles-remaining-nag' ).delay( 3000 ).animate({ left:'0px' });
-
-                        if ( $('.acn-zero-remaining-overlay').length > 0 ) {
-                            $('html').css('overflow', 'hidden');
-                        }
-                    }
-
-                }, 'html' );
-
-            }
-
+        if ( 'zero' === resp.state || $('.acn-zero-remaining-overlay').length > 0 ) {
+            $('html').css('overflow', 'hidden');
+        } else {
+            $nag.delay( 3000 ).animate({ left: '0px' });
         }
     });
 
