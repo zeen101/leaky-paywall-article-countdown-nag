@@ -1,15 +1,15 @@
-# Copyright (C) 2025 Leaky Paywall
+# Copyright (C) 2026 Leaky Paywall
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Leaky Paywall - Article Countdown Nag 3.8.5\n"
+"Project-Id-Version: Leaky Paywall - Article Countdown Nag 3.8.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/leaky-paywall-article-countdown-nag\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-12-11T21:11:15+00:00\n"
+"POT-Creation-Date: 2026-05-26T15:45:18+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lp-acn\n"
@@ -35,75 +35,75 @@ msgstr ""
 msgid "Leaky Paywall"
 msgstr ""
 
-#: class-display-countdown.php:136
+#: class-display-countdown.php:185
 msgid "Subscribe"
 msgstr ""
 
-#: class-display-countdown.php:138
+#: class-display-countdown.php:187
 msgid "Login"
 msgstr ""
 
-#: class-display-countdown.php:149
-#: class-display-countdown.php:177
+#: class-display-countdown.php:198
+#: class-display-countdown.php:226
 msgid "Subscribe today for full access"
 msgstr ""
 
-#: class-display-countdown.php:150
-#: class-display-countdown.php:178
+#: class-display-countdown.php:199
+#: class-display-countdown.php:227
 msgid "Current subscriber? Login here"
 msgstr ""
 
-#: class-display-countdown.php:162
+#: class-display-countdown.php:211
 msgid "No content remaining"
 msgstr ""
 
-#: class-display-countdown.php:194
-#: class-display-countdown.php:195
+#: class-display-countdown.php:243
+#: class-display-countdown.php:244
 #, php-format
 msgid "%s Remaining"
 msgstr ""
 
-#: class.php:111
+#: class.php:112
 msgid "Article Countdown Nag"
 msgstr ""
 
-#: class.php:117
+#: class.php:118
 msgid "Show Nag After Reading"
 msgstr ""
 
-#: class.php:119
+#: class.php:120
 msgid "restricted content items"
 msgstr ""
 
-#: class.php:125
+#: class.php:126
 msgid "Nag Theme"
 msgstr ""
 
-#: class.php:129
+#: class.php:130
 msgid "Default"
 msgstr ""
 
-#: class.php:130
+#: class.php:131
 msgid "Slim"
 msgstr ""
 
-#: class.php:133
+#: class.php:134
 msgid "Choose theme for article countdown nag popup."
 msgstr ""
 
-#: class.php:138
+#: class.php:139
 msgid "Zero Remaining Popup"
 msgstr ""
 
-#: class.php:141
+#: class.php:142
 msgid "Yes"
 msgstr ""
 
-#: class.php:142
+#: class.php:143
 msgid "No"
 msgstr ""
 
-#: class.php:144
+#: class.php:145
 msgid "Display the zero remaining popup over the top of the page when the content limit is reached. If set to \"No\", the user will instead see the default Leaky Paywall subscribe nag in the content."
 msgstr ""
 
