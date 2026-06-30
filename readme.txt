@@ -3,7 +3,7 @@ Contributors: layotte, peterericson, endocreative
 Tags: metered, paywall, leaky, wordpress, magazine, news, blog, articles, remaining
 Requires at least: 5.6
 Tested up to: 7.0
-Stable tag: 3.8.6
+Stable tag: 3.9.0
 
 Creates an <a href="https://leakypaywall.com/downloads/article-countdown-nag/">Article Countdown Nag</a> for Leaky Paywall WordPress plugin. More info at https://leakypaywall.com
 
@@ -35,6 +35,10 @@ You must have:
 * Leaky Paywall - Article Countdown Nag is GPL
 
 == Changelog ==
+
+= 3.9.0 =
+* Fixed: countdown nag now appears for subscribers on limited-tier levels (e.g. a 10-post tier). Previously it was silently hidden for every logged-in subscriber, even when they had a per-tier post limit.
+* Fixed: countdown number now reflects the subscriber's own tier limit instead of the global guest limit, so registered subscribers no longer see a negative count (e.g. "-3 Remaining").
 
 = 3.8.6 =
 * Update calculation to use new Leaky Paywall REST API endpoints

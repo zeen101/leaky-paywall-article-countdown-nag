@@ -2,14 +2,14 @@
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Leaky Paywall - Article Countdown Nag 3.8.6\n"
+"Project-Id-Version: Leaky Paywall - Article Countdown Nag 3.9.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/leaky-paywall-article-countdown-nag\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-26T15:45:18+00:00\n"
+"POT-Creation-Date: 2026-06-30T22:57:19+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lp-acn\n"
@@ -35,30 +35,30 @@ msgstr ""
 msgid "Leaky Paywall"
 msgstr ""
 
-#: class-display-countdown.php:185
+#: class-display-countdown.php:231
 msgid "Subscribe"
 msgstr ""
 
-#: class-display-countdown.php:187
+#: class-display-countdown.php:233
 msgid "Login"
 msgstr ""
 
-#: class-display-countdown.php:198
-#: class-display-countdown.php:226
+#: class-display-countdown.php:244
+#: class-display-countdown.php:272
 msgid "Subscribe today for full access"
 msgstr ""
 
-#: class-display-countdown.php:199
-#: class-display-countdown.php:227
+#: class-display-countdown.php:245
+#: class-display-countdown.php:273
 msgid "Current subscriber? Login here"
 msgstr ""
 
-#: class-display-countdown.php:211
+#: class-display-countdown.php:257
 msgid "No content remaining"
 msgstr ""
 
-#: class-display-countdown.php:243
-#: class-display-countdown.php:244
+#: class-display-countdown.php:289
+#: class-display-countdown.php:290
 #, php-format
 msgid "%s Remaining"
 msgstr ""

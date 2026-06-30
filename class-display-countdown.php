@@ -99,12 +99,58 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 
 		$current_user = wp_get_current_user();
 
-		// if the user is logged in and has access, don't show the nag
-		if ( $current_user->ID > 0 && leaky_paywall_user_has_access( $current_user ) ) {
+		// Only suppress the nag for subscribers whose level grants UNLIMITED
+		// access to this post type. Subscribers on a limited tier (e.g. a
+		// 10-post level) still need to see the countdown so they know how
+		// many posts they have left in their own budget. Without this check
+		// the nag was silently hidden for every logged-in subscriber.
+		if ( $current_user->ID > 0
+			&& leaky_paywall_user_has_access( $current_user )
+			&& $this->current_user_has_unlimited_access()
+		) {
 			return new WP_REST_Response( array( 'state' => 'none' ), 200 );
 		}
 
 		return $this->countdown_response();
+	}
+
+	/**
+	 * Whether the current logged-in user has unlimited access to the post
+	 * being viewed via any of their LP subscription levels.
+	 *
+	 * @return bool
+	 */
+	public function current_user_has_unlimited_access() {
+		$post_obj = get_post( $this->post_id );
+		if ( ! $post_obj ) {
+			return false;
+		}
+
+		$level_ids = function_exists( 'leaky_paywall_subscriber_current_level_ids' )
+			? leaky_paywall_subscriber_current_level_ids()
+			: array();
+
+		if ( empty( $level_ids ) ) {
+			return false;
+		}
+
+		$settings = get_leaky_paywall_settings();
+
+		foreach ( $level_ids as $level_id ) {
+			if ( ! isset( $settings['levels'][ $level_id ]['post_types'] ) ) {
+				continue;
+			}
+			foreach ( $settings['levels'][ $level_id ]['post_types'] as $access_rule ) {
+				if ( ! isset( $access_rule['post_type'], $access_rule['allowed'] ) ) {
+					continue;
+				}
+				if ( $access_rule['post_type'] == $post_obj->post_type && 'unlimited' === $access_rule['allowed'] ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -249,28 +295,78 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 
 	public function calculate_number_allowed()
 	{
-		$number_allowed = 0;
-		$restrictions = $this->lp_restriction->get_restriction_settings();
-		$post_obj = get_post( $this->post_id );
 		$settings = get_leaky_paywall_settings();
+		$post_obj = get_post( $this->post_id );
 
-		foreach( $restrictions['post_types'] as $restriction ) {
-
-			if ( $restriction['post_type'] == $post_obj->post_type && $restriction['taxonomy'] && $this->lp_restriction->content_taxonomy_matches( $restriction['taxonomy'] ) ) {
-
-				$number_allowed = $restriction['allowed_value'];
-				break;
-
-			} else if ( $restriction['post_type'] == $post_obj->post_type ) {
-
-				$number_allowed = $restriction['allowed_value'];
-
-			}
-
+		// Combined restrictions short-circuit everything else with a global
+		// across-post-types cap.
+		if ( ! empty( $settings['enable_combined_restrictions'] ) && 'on' == $settings['enable_combined_restrictions'] ) {
+			return intval( $settings['combined_restrictions_total_allowed'] );
 		}
 
-		if ( 'on' == $settings['enable_combined_restrictions'] ) {
-			$number_allowed = $settings['combined_restrictions_total_allowed'];
+		// For logged-in subscribers with an active LP level, read their
+		// level's specific allowed_value. Without this the function would
+		// return the global guest limit (e.g. 5), and a subscriber on a
+		// 10-post tier who'd read 8 would see "5 - 8 = -3 remaining."
+		// Taxonomy-specific rules take precedence over catch-all rules,
+		// matching the same precedence used in class-restrictions.php.
+		$level_ids = function_exists( 'leaky_paywall_subscriber_current_level_ids' )
+			? leaky_paywall_subscriber_current_level_ids()
+			: array();
+
+		if ( ! empty( $level_ids ) && leaky_paywall_user_has_access() ) {
+			foreach ( $level_ids as $level_id ) {
+				if ( ! isset( $settings['levels'][ $level_id ]['post_types'] ) ) {
+					continue;
+				}
+				$rules = $settings['levels'][ $level_id ]['post_types'];
+
+				// Pass 1: prefer a taxonomy-specific rule matching this post.
+				foreach ( $rules as $access_rule ) {
+					if ( ! isset( $access_rule['post_type'] ) || $access_rule['post_type'] != $post_obj->post_type ) {
+						continue;
+					}
+					if ( isset( $access_rule['allowed'] ) && 'unlimited' === $access_rule['allowed'] ) {
+						// Belt-and-suspenders — unlimited subscribers should already
+						// have been short-circuited by current_user_has_unlimited_access().
+						return PHP_INT_MAX;
+					}
+					if ( isset( $access_rule['allowed'] ) && 'limited' === $access_rule['allowed']
+						&& ! empty( $access_rule['taxonomy'] )
+						&& 'all' !== $access_rule['taxonomy']
+						&& $this->lp_restriction->content_taxonomy_matches( $access_rule['taxonomy'] )
+					) {
+						return intval( $access_rule['allowed_value'] );
+					}
+				}
+
+				// Pass 2: catch-all rule for this post type at this level.
+				foreach ( $rules as $access_rule ) {
+					if ( ! isset( $access_rule['post_type'], $access_rule['allowed'] ) ) {
+						continue;
+					}
+					if ( $access_rule['post_type'] == $post_obj->post_type && 'limited' === $access_rule['allowed'] ) {
+						return intval( $access_rule['allowed_value'] );
+					}
+				}
+			}
+		}
+
+		// Fall back to global restriction settings — guests, and logged-in
+		// users without an active LP level.
+		$number_allowed = 0;
+		$restrictions   = $this->lp_restriction->get_restriction_settings();
+
+		foreach ( $restrictions['post_types'] as $restriction ) {
+			if ( $restriction['post_type'] == $post_obj->post_type
+				&& ! empty( $restriction['taxonomy'] )
+				&& $this->lp_restriction->content_taxonomy_matches( $restriction['taxonomy'] )
+			) {
+				$number_allowed = $restriction['allowed_value'];
+				break;
+			} elseif ( $restriction['post_type'] == $post_obj->post_type ) {
+				$number_allowed = $restriction['allowed_value'];
+			}
 		}
 
 		return $number_allowed;
