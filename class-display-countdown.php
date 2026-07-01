@@ -298,18 +298,13 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 		$settings = get_leaky_paywall_settings();
 		$post_obj = get_post( $this->post_id );
 
-		// Combined restrictions short-circuit everything else with a global
-		// across-post-types cap.
-		if ( ! empty( $settings['enable_combined_restrictions'] ) && 'on' == $settings['enable_combined_restrictions'] ) {
-			return intval( $settings['combined_restrictions_total_allowed'] );
-		}
-
-		// For logged-in subscribers with an active LP level, read their
-		// level's specific allowed_value. Without this the function would
-		// return the global guest limit (e.g. 5), and a subscriber on a
-		// 10-post tier who'd read 8 would see "5 - 8 = -3 remaining."
-		// Taxonomy-specific rules take precedence over catch-all rules,
-		// matching the same precedence used in class-restrictions.php.
+		// Check the subscriber's level FIRST — before combined/global
+		// restrictions. This mirrors how class-restrictions.php works:
+		// level_id_allows_access() uses the level's own allowed_value and does
+		// NOT apply combined restrictions to subscribers. Combined restrictions
+		// only govern the guest / non-subscriber metering path. Without this
+		// ordering, sites with enable_combined_restrictions=on would cap every
+		// subscriber at the combined total (usually the guest limit).
 		$level_ids = function_exists( 'leaky_paywall_subscriber_current_level_ids' )
 			? leaky_paywall_subscriber_current_level_ids()
 			: array();
@@ -352,8 +347,13 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 			}
 		}
 
-		// Fall back to global restriction settings — guests, and logged-in
-		// users without an active LP level.
+		// No subscriber level matched — this is the guest / no-level path.
+		// Combined restrictions only apply here.
+		if ( ! empty( $settings['enable_combined_restrictions'] ) && 'on' == $settings['enable_combined_restrictions'] ) {
+			return intval( $settings['combined_restrictions_total_allowed'] );
+		}
+
+		// Fall back to global restriction settings.
 		$number_allowed = 0;
 		$restrictions   = $this->lp_restriction->get_restriction_settings();
 
@@ -380,8 +380,47 @@ class Leaky_Paywall_Article_Countdown_Nag_Display {
 		$viewed_data = $this->lp_restriction->get_content_viewed_by_user();
 		$settings = get_leaky_paywall_settings();
 
-		// Combined restrictions count views across every post type, matching how
-		// calculate_number_allowed() returns the combined total.
+		// Subscribers on an active LP level count views per-post-type, not
+		// combined. This mirrors the ordering fix in calculate_number_allowed()
+		// (Bug 4): combined restrictions govern the guest metering path only,
+		// so we must not use combined counting for subscribers either — that
+		// would sum unrelated post-type views into a subscriber's article
+		// budget and still produce a wrong "remaining" number even after the
+		// allowed-side is correct.
+		$level_ids = function_exists( 'leaky_paywall_subscriber_current_level_ids' )
+			? leaky_paywall_subscriber_current_level_ids()
+			: array();
+
+		if ( ! empty( $level_ids ) && leaky_paywall_user_has_access() ) {
+			// Try the taxonomy-specific count first (matches the level's
+			// taxonomy rule if one applies), fall back to a plain post-type
+			// count.
+			foreach ( $level_ids as $level_id ) {
+				if ( ! isset( $settings['levels'][ $level_id ]['post_types'] ) ) {
+					continue;
+				}
+				foreach ( $settings['levels'][ $level_id ]['post_types'] as $access_rule ) {
+					if ( ! isset( $access_rule['post_type'] ) || $access_rule['post_type'] != $post_obj->post_type ) {
+						continue;
+					}
+					if ( ! empty( $access_rule['taxonomy'] )
+						&& 'all' !== $access_rule['taxonomy']
+						&& $this->lp_restriction->content_taxonomy_matches( $access_rule['taxonomy'] )
+					) {
+						return (int) $this->lp_restriction->get_number_viewed_by_term( $access_rule['taxonomy'] );
+					}
+				}
+			}
+			// Catch-all: count this post type only.
+			if ( isset( $viewed_data[ $post_obj->post_type ] ) && is_array( $viewed_data[ $post_obj->post_type ] ) ) {
+				return count( $viewed_data[ $post_obj->post_type ] );
+			}
+			return 0;
+		}
+
+		// Guest / no-level path. Combined restrictions count views across
+		// every post type, matching how calculate_number_allowed() returns
+		// the combined total for this same path.
 		if ( 'on' == $settings['enable_combined_restrictions'] ) {
 			foreach ( (array) $viewed_data as $items ) {
 				$number_viewed += count( $items );

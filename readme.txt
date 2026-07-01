@@ -3,7 +3,7 @@ Contributors: layotte, peterericson, endocreative
 Tags: metered, paywall, leaky, wordpress, magazine, news, blog, articles, remaining
 Requires at least: 5.6
 Tested up to: 7.0
-Stable tag: 3.9.0
+Stable tag: 3.9.1
 
 Creates an <a href="https://leakypaywall.com/downloads/article-countdown-nag/">Article Countdown Nag</a> for Leaky Paywall WordPress plugin. More info at https://leakypaywall.com
 
@@ -35,6 +35,12 @@ You must have:
 * Leaky Paywall - Article Countdown Nag is GPL
 
 == Changelog ==
+
+= 3.9.1 =
+
+* Fixed: subscribers on limited tiers now see the correct count on sites with combined restrictions enabled.
+* Fixed: subscriber view counts no longer sum across unrelated post types on sites with combined restrictions. Views are now counted per-post-type against the subscriber's own budget, mirroring how the "allowed" side already works.
+* Fixed: countdown REST endpoint now recognizes logged-in subscribers. A missing WP REST nonce was causing every request to look anonymous, so subscribers always got the guest limit.
 
 = 3.9.0 =
 * Fixed: countdown nag now appears for subscribers on limited-tier levels (e.g. a 10-post tier). Previously it was silently hidden for every logged-in subscriber, even when they had a per-tier post limit.

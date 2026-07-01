@@ -28,12 +28,22 @@ $lpacdn_jquery( document ).ready( function($) {
         viewedContent = {};
     }
 
-    $.ajax({
+    var ajaxArgs = {
         url: lp_acn.restUrl,
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ post_id: postId, viewed_content: viewedContent })
-    }).done(function(resp) {
+    };
+
+    // Send the WP REST nonce so the server can identify the logged-in user
+    // and apply their subscription level's limit instead of the guest default.
+    // The header is only added when a nonce is present (server only mints one
+    // for logged-in visitors).
+    if ( lp_acn.nonce ) {
+        ajaxArgs.headers = { 'X-WP-Nonce': lp_acn.nonce };
+    }
+
+    $.ajax( ajaxArgs ).done(function(resp) {
 
         if ( ! resp || 'none' === resp.state || ! resp.html ) {
             return;

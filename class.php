@@ -49,6 +49,13 @@ class Leaky_Paywall_Article_Countdown_Nag
 		$params = array(
 			'ajaxurl' => admin_url('admin-ajax.php', $protocol),
 			'restUrl' => esc_url_raw(rest_url('lp-acn/v1/countdown')),
+			// WP REST cookie auth requires an X-WP-Nonce header for
+			// wp_get_current_user() to identify the logged-in visitor.
+			// Without it every request looks anonymous, and the countdown
+			// falls back to the guest limit for subscribers too. Only
+			// generate the nonce when a user is logged in — guests don't
+			// need it and the JS gates the header on its presence.
+			'nonce'   => is_user_logged_in() ? wp_create_nonce('wp_rest') : '',
 		);
 
 		wp_localize_script('leaky-paywall-article-countdown-nag', 'lp_acn', $params);

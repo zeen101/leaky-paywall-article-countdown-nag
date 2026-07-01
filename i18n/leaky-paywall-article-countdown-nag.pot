@@ -2,14 +2,14 @@
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Leaky Paywall - Article Countdown Nag 3.9.0\n"
+"Project-Id-Version: Leaky Paywall - Article Countdown Nag 3.9.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/leaky-paywall-article-countdown-nag\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-30T22:57:19+00:00\n"
+"POT-Creation-Date: 2026-07-01T15:36:25+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lp-acn\n"
@@ -63,47 +63,47 @@ msgstr ""
 msgid "%s Remaining"
 msgstr ""
 
-#: class.php:112
+#: class.php:119
 msgid "Article Countdown Nag"
 msgstr ""
 
-#: class.php:118
+#: class.php:125
 msgid "Show Nag After Reading"
 msgstr ""
 
-#: class.php:120
+#: class.php:127
 msgid "restricted content items"
 msgstr ""
 
-#: class.php:126
+#: class.php:133
 msgid "Nag Theme"
 msgstr ""
 
-#: class.php:130
+#: class.php:137
 msgid "Default"
 msgstr ""
 
-#: class.php:131
+#: class.php:138
 msgid "Slim"
 msgstr ""
 
-#: class.php:134
+#: class.php:141
 msgid "Choose theme for article countdown nag popup."
 msgstr ""
 
-#: class.php:139
+#: class.php:146
 msgid "Zero Remaining Popup"
 msgstr ""
 
-#: class.php:142
+#: class.php:149
 msgid "Yes"
 msgstr ""
 
-#: class.php:143
+#: class.php:150
 msgid "No"
 msgstr ""
 
-#: class.php:145
+#: class.php:152
 msgid "Display the zero remaining popup over the top of the page when the content limit is reached. If set to \"No\", the user will instead see the default Leaky Paywall subscribe nag in the content."
 msgstr ""
 
